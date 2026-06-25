@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1100" viewBox="0 0 1400 1100" role="img" aria-labelledby="title desc">
+  <title id="title">Jaiwin Design Studio abstract hero artwork</title>
+  <desc id="desc">A colorful futuristic creative workspace with glowing panels and abstract design shapes.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#09113a"/>
+      <stop offset="0.45" stop-color="#160839"/>
+      <stop offset="1" stop-color="#07101d"/>
+    </linearGradient>
+    <radialGradient id="violet" cx="45%" cy="34%" r="60%">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.9"/>
+      <stop offset="0.18" stop-color="#23d9ff" stop-opacity="0.85"/>
+      <stop offset="0.48" stop-color="#8f42ff" stop-opacity="0.65"/>
+      <stop offset="1" stop-color="#8f42ff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="pink" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#ff4fb7" stop-opacity="0.95"/>
+      <stop offset="1" stop-color="#ff4fb7" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="blur">
+      <feGaussianBlur stdDeviation="26"/>
+    </filter>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="38" stdDeviation="38" flood-color="#000000" flood-opacity="0.36"/>
+    </filter>
+  </defs>
+  <rect width="1400" height="1100" fill="url(#bg)"/>
+  <circle cx="332" cy="206" r="275" fill="url(#pink)" filter="url(#blur)" opacity="0.75"/>
+  <circle cx="1050" cy="210" r="260" fill="#23d9ff" filter="url(#blur)" opacity="0.35"/>
+  <circle cx="1020" cy="820" r="260" fill="#ff8a3d" filter="url(#blur)" opacity="0.36"/>
+  <g opacity="0.35">
+    <path d="M98 210H1302" stroke="#ffffff" stroke-opacity="0.16"/>
+    <path d="M98 420H1302" stroke="#ffffff" stroke-opacity="0.12"/>
+    <path d="M98 630H1302" stroke="#ffffff" stroke-opacity="0.10"/>
+    <path d="M98 840H1302" stroke="#ffffff" stroke-opacity="0.10"/>
+    <path d="M240 95V1005" stroke="#ffffff" stroke-opacity="0.10"/>
+    <path d="M520 95V1005" stroke="#ffffff" stroke-opacity="0.12"/>
+    <path d="M800 95V1005" stroke="#ffffff" stroke-opacity="0.10"/>
+    <path d="M1080 95V1005" stroke="#ffffff" stroke-opacity="0.10"/>
+  </g>
+  <g filter="url(#softShadow)">
+    <rect x="285" y="260" width="830" height="525" rx="18" fill="#ffffff" fill-opacity="0.08" stroke="#ffffff" stroke-opacity="0.2"/>
+    <rect x="345" y="322" width="710" height="86" rx="14" fill="#ffffff" fill-opacity="0.1"/>
+    <rect x="345" y="448" width="305" height="232" rx="14" fill="#23d9ff" fill-opacity="0.18"/>
+    <rect x="690" y="448" width="365" height="232" rx="14" fill="#ff4fb7" fill-opacity="0.16"/>
+    <path d="M390 620C470 520 520 560 590 486C638 435 705 408 764 462C828 522 894 500 1006 565" fill="none" stroke="#ffffff" stroke-width="13" stroke-linecap="round" opacity="0.72"/>
+    <circle cx="470" cy="548" r="46" fill="#ffcf69"/>
+    <circle cx="885" cy="536" r="78" fill="url(#violet)"/>
+  </g>
+  <g transform="translate(700 540)">
+    <circle r="164" fill="none" stroke="#23d9ff" stroke-width="5" opacity="0.75"/>
+    <circle r="215" fill="none" stroke="#ff4fb7" stroke-width="4" opacity="0.48"/>
+    <path d="M-244 0C-138 -94 132 -94 244 0C112 95 -110 95 -244 0Z" fill="none" stroke="#ffffff" stroke-width="3" opacity="0.32"/>
+    <circle cx="-118" cy="-116" r="16" fill="#8df1ff"/>
+    <circle cx="148" cy="96" r="21" fill="#ffcf69"/>
+    <circle cx="214" cy="-46" r="13" fill="#ff4fb7"/>
+  </g>
+  <text x="700" y="904" text-anchor="middle" fill="#ffffff" font-family="Inter, Arial, sans-serif" font-size="68" font-weight="800">Jaiwin Design Studio</text>
+  <text x="700" y="962" text-anchor="middle" fill="#b9c0dc" font-family="Inter, Arial, sans-serif" font-size="28">Banners, invitations, frames, gifts, photography and web design</text>
+</svg>

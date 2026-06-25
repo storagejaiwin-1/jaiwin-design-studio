@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">21st Birthday Commemorative Poster</title>
+  <desc id="desc">A premium placeholder birthday poster with warm light, portrait frame, and celebration typography.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#160839"/>
+      <stop offset="0.48" stop-color="#ff4fb7"/>
+      <stop offset="1" stop-color="#ff8a3d"/>
+    </linearGradient>
+    <radialGradient id="shine" cx="50%" cy="45%" r="50%">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.94"/>
+      <stop offset="0.28" stop-color="#ffcf69" stop-opacity="0.65"/>
+      <stop offset="1" stop-color="#ffcf69" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="900" fill="url(#bg)"/>
+  <circle cx="610" cy="380" r="310" fill="url(#shine)"/>
+  <rect x="398" y="172" width="404" height="520" rx="8" fill="#ffffff" opacity="0.18" stroke="#ffffff" stroke-opacity="0.38" stroke-width="4"/>
+  <circle cx="600" cy="342" r="118" fill="#ffffff" opacity="0.72"/>
+  <path d="M430 674C468 538 540 497 600 497C666 497 738 547 770 674Z" fill="#07101d" opacity="0.42"/>
+  <text x="600" y="128" text-anchor="middle" fill="#ffffff" font-family="Inter, Arial, sans-serif" font-size="54" font-weight="900">21st BIRTHDAY</text>
+  <text x="600" y="765" text-anchor="middle" fill="#ffffff" font-family="Inter, Arial, sans-serif" font-size="46" font-weight="900">Commemorative Poster</text>
+  <text x="600" y="815" text-anchor="middle" fill="#ffe6a8" font-family="Inter, Arial, sans-serif" font-size="24">Upload the final event image from Decap CMS</text>
+</svg>

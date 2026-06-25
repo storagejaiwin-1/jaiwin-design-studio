@@ -1,0 +1,48 @@
+{
+  "businessName": "Jaiwin Design Studio",
+  "logoMarkText": "JD",
+  "logoText": "Jaiwin Design Studio",
+  "loaderEyebrow": "Creative studio loading",
+  "phone": "+91 95975 51805",
+  "whatsappNumber": "+91 95975 51805",
+  "email": "jaiwindesignstudio@gmail.com",
+  "instagramHandle": "@jaiwindesignstudio",
+  "instagramUrl": "https://www.instagram.com/jaiwindesignstudio/",
+  "location": "Lionstown, Thoothukudi",
+  "locationLabel": "LOC",
+  "fullAddress": "359/66, 2nd Street, Mini Sahaya Puram, Lionstown, Thoothukudi - 628001",
+  "navLinks": [
+    {
+      "label": "About",
+      "url": "#about"
+    },
+    {
+      "label": "Services",
+      "url": "#services"
+    },
+    {
+      "label": "Portfolio",
+      "url": "#portfolio"
+    },
+    {
+      "label": "Process",
+      "url": "#process"
+    },
+    {
+      "label": "Contact",
+      "url": "#contact"
+    }
+  ],
+  "navCtaLabel": "WhatsApp",
+  "footerText": "Designed for moments that deserve to be remembered clearly, colorfully, and beautifully.",
+  "footerCreditText": "Jaiwin Design Studio. Designed for Jaiwin Design Studio.",
+  "seoTitle": "Jaiwin Design Studio | Creative Design Studio in Thoothukudi",
+  "seoDescription": "Premium banners, flex designs, invitations, photo gifts, frames, photography, branding, and web design in Lionstown, Thoothukudi.",
+  "backgroundColor": "#07081d",
+  "surfaceColor": "#10143a",
+  "textColor": "#ffffff",
+  "mutedTextColor": "#b9c0dc",
+  "primaryBrandColor": "#8f42ff",
+  "secondaryBrandColor": "#ff4fb7",
+  "highlightColor": "#23d9ff"
+}

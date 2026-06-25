@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">Beach Legends Premier League Sports Banner</title>
+  <desc id="desc">A colorful placeholder sports banner design with coastal tones and tournament typography.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#082454"/>
+      <stop offset="0.45" stop-color="#006d91"/>
+      <stop offset="1" stop-color="#ff8a3d"/>
+    </linearGradient>
+    <radialGradient id="ball" cx="35%" cy="30%" r="70%">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.45" stop-color="#8df1ff"/>
+      <stop offset="1" stop-color="#3e6dff"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="900" fill="url(#bg)"/>
+  <path d="M0 660C155 590 276 675 407 632C570 578 660 484 829 542C965 589 1037 670 1200 598V900H0Z" fill="#ffffff" opacity="0.18"/>
+  <path d="M0 725C181 648 299 748 452 700C604 652 713 622 861 681C1005 739 1074 786 1200 716V900H0Z" fill="#07101d" opacity="0.34"/>
+  <circle cx="918" cy="252" r="146" fill="url(#ball)" opacity="0.9"/>
+  <circle cx="918" cy="252" r="188" fill="none" stroke="#ffffff" stroke-width="5" opacity="0.35"/>
+  <rect x="86" y="95" width="518" height="116" rx="8" fill="#ffffff" opacity="0.12"/>
+  <text x="112" y="176" fill="#ffffff" font-family="Inter, Arial, sans-serif" font-size="58" font-weight="900">BEACH LEGENDS</text>
+  <text x="114" y="248" fill="#ffcf69" font-family="Inter, Arial, sans-serif" font-size="38" font-weight="800">PREMIER LEAGUE</text>
+  <text x="92" y="790" fill="#ffffff" font-family="Inter, Arial, sans-serif" font-size="42" font-weight="800">Sports Banner Sample</text>
+  <text x="94" y="840" fill="#d7f9ff" font-family="Inter, Arial, sans-serif" font-size="24">Replace this placeholder from the CMS portfolio editor</text>
+</svg>

@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#08091f" />
+    <title>Jaiwin Design Studio | Creative Design Studio in Thoothukudi</title>
+    <meta
+      name="description"
+      content="Jaiwin Design Studio creates premium banners, flex designs, invitations, photo gifts, frames, photography, branding, and web design in Lionstown, Thoothukudi."
+    />
+    <meta property="og:title" content="Jaiwin Design Studio | Creative Design Studio" />
+    <meta
+      property="og:description"
+      content="Color-rich, print-ready, digital-ready design work for events, brands, shops, sports, weddings, and special moments."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/assets/images/hero-fallback.svg" />
+    <meta property="og:url" content="/" />
+    <link rel="canonical" href="/" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://unpkg.com/sheryjs/dist/Shery.css" />
+    <link rel="stylesheet" href="style.css" />
+    <script defer src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script defer src="https://unpkg.com/sheryjs/dist/Shery.js"></script>
+    <script defer src="main.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <div class="loader" id="loader" aria-hidden="true">
+      <div class="loader__orb"></div>
+      <p class="loader__eyebrow" data-loader-eyebrow>Creative studio loading</p>
+      <strong data-loader-name>Jaiwin Design Studio</strong>
+    </div>
+
+    <div class="custom-cursor" id="custom-cursor" aria-hidden="true"></div>
+    <div class="noise-layer" aria-hidden="true"></div>
+    <div class="ambient-layer" aria-hidden="true">
+      <span class="blob blob--violet" data-parallax data-speed="0.16"></span>
+      <span class="blob blob--cyan" data-parallax data-speed="-0.11"></span>
+      <span class="blob blob--orange" data-parallax data-speed="0.08"></span>
+      <span class="spark spark--one" data-parallax data-speed="0.22"></span>
+      <span class="spark spark--two" data-parallax data-speed="-0.18"></span>
+    </div>
+
+    <header class="site-header" data-header>
+      <a class="brand magnetic" href="#home" aria-label="Jaiwin Design Studio home">
+        <span class="brand__mark" aria-hidden="true">JD</span>
+        <span class="brand__text" data-logo-text>Jaiwin Design Studio</span>
+      </a>
+
+      <button class="menu-toggle magnetic" type="button" aria-expanded="false" aria-controls="site-menu">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span class="sr-only">Toggle navigation</span>
+      </button>
+
+      <nav class="site-nav" id="site-menu" aria-label="Main navigation">
+        <a class="magnetic" href="#about">About</a>
+        <a class="magnetic" href="#services">Services</a>
+        <a class="magnetic" href="#portfolio">Portfolio</a>
+        <a class="magnetic" href="#process">Process</a>
+        <a class="magnetic" href="#contact">Contact</a>
+        <a class="nav-cta magnetic" href="https://wa.me/919597551805" data-whatsapp-link rel="noopener noreferrer">
+          WhatsApp
+        </a>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="hero section-shell" id="home" aria-label="Homepage">
+        <div class="hero__copy">
+          <p class="eyebrow reveal-line" data-landing-eyebrow>Premium creative design studio in Thoothukudi</p>
+          <h1 class="hero__title reveal-line">
+            <span data-landing-headline>Designs That Make Your Moments</span>
+            <span class="gradient-text" data-landing-highlight>Unforgettable</span>
+          </h1>
+          <p class="hero__text reveal-line" data-landing-subheadline>
+            From vibrant flex banners and invitations to brand visuals, photo gifts, frames, and web design - Jaiwin
+            Design Studio brings your ideas to life with color, clarity, and creativity.
+          </p>
+          <div class="hero__actions reveal-line">
+            <a class="button button--primary magnetic" data-primary-cta href="#portfolio">
+              <span>View Portfolio</span>
+            </a>
+            <a
+              class="button button--ghost magnetic"
+              data-secondary-cta
+              href="https://wa.me/919597551805"
+              rel="noopener noreferrer"
+            >
+              <span>Contact on WhatsApp</span>
+            </a>
+          </div>
+          <p class="hero__location reveal-line">
+            <span aria-hidden="true" data-location-label>LOC</span>
+            <span data-site-location>Lionstown, Thoothukudi</span>
+          </p>
+        </div>
+
+        <div class="hero__visual" data-hero-visual>
+          <canvas class="hero__canvas" id="hero-canvas" aria-label="Interactive 3D creative studio visual"></canvas>
+          <img
+            class="hero__fallback"
+            data-hero-fallback
+            src="/assets/images/hero-fallback.svg"
+            alt="Colorful abstract creative studio display"
+            loading="eager"
+            decoding="async"
+          />
+          <div class="hero__glass-card magnetic" aria-label="Studio quick facts">
+            <span data-hero-card-eyebrow>Print</span>
+            <strong data-hero-card-title>Ready</strong>
+            <small data-hero-card-text>Digital + flex artwork</small>
+          </div>
+        </div>
+      </section>
+
+      <section class="about section-shell" id="about" aria-labelledby="about-title">
+        <div class="section-kicker" data-about-kicker>About the studio</div>
+        <div class="section-heading">
+          <h2 id="about-title" data-about-heading>Color, craft, and clarity for every celebration.</h2>
+          <p data-about-highlight>
+            Local studio energy with premium design polish - built for personal events, shops, campaigns, sports, and
+            brands.
+          </p>
+        </div>
+        <div class="about__grid">
+          <div class="about__media">
+            <img
+              data-about-image
+              src="/assets/images/hero-fallback.svg"
+              alt="Jaiwin Design Studio creative workspace"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+          <div class="about__content">
+            <div class="about__paragraphs" data-about-paragraphs></div>
+            <div class="stat-grid" data-about-stats></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="services section-shell" id="services" aria-labelledby="services-title">
+        <div class="section-kicker" data-services-kicker>Services</div>
+        <div class="section-heading">
+          <h2 id="services-title" data-services-heading>Design services for every visual need.</h2>
+          <p data-services-subheading>
+            Add, rename, reorder, or remove services from the admin dashboard without touching code.
+          </p>
+        </div>
+        <div class="services__grid" id="services-grid" aria-live="polite"></div>
+      </section>
+
+      <section class="portfolio section-shell" id="portfolio" aria-labelledby="portfolio-title">
+        <div class="section-kicker" data-portfolio-kicker>Portfolio</div>
+        <div class="section-heading section-heading--split">
+          <div>
+            <h2 id="portfolio-title" data-portfolio-heading>Recent visual stories.</h2>
+            <p data-portfolio-subheading>
+              Featured posters, banners, flyers, and digital designs rendered directly from CMS content.
+            </p>
+          </div>
+          <a class="button button--outline magnetic" data-portfolio-cta href="#contact">Start a project</a>
+        </div>
+        <div class="portfolio__grid" id="portfolio-grid" aria-live="polite"></div>
+      </section>
+
+      <section class="highlights section-shell" id="highlights" aria-labelledby="highlights-title">
+        <div class="section-kicker" data-highlights-kicker>Why choose us</div>
+        <div class="section-heading">
+          <h2 id="highlights-title" data-highlights-heading>Sharp ideas, quick delivery, polished output.</h2>
+          <p data-highlights-subheading>Every detail is prepared to look strong on screen and in print.</p>
+        </div>
+        <div class="highlights__grid" data-highlights-grid></div>
+      </section>
+
+      <section class="process section-shell" id="process" aria-labelledby="process-title">
+        <div class="section-kicker" data-process-kicker>Process</div>
+        <div class="section-heading">
+          <h2 id="process-title" data-process-heading>A simple path from idea to finished design.</h2>
+          <p data-process-subheading>Clear previews, easy corrections, and final files ready for use.</p>
+        </div>
+        <div class="process__timeline" data-process-list></div>
+      </section>
+
+      <section class="contact section-shell" id="contact" aria-labelledby="contact-title">
+        <div class="contact__panel">
+          <div class="contact__copy">
+            <div class="section-kicker" data-contact-kicker>Contact</div>
+            <h2 id="contact-title" data-contact-heading>Tell us what you want to create.</h2>
+            <p data-contact-subheading>
+              Share your event, shop, brand, or gifting idea and Jaiwin Design Studio will help shape it into a
+              polished visual.
+            </p>
+            <div class="contact__links">
+              <a class="contact-link magnetic" data-contact-whatsapp href="https://wa.me/919597551805" rel="noopener noreferrer">
+                <span>WA</span>
+                <strong>WhatsApp</strong>
+              </a>
+              <a class="contact-link magnetic" data-contact-email href="mailto:jaiwindesignstudio@gmail.com">
+                <span>EM</span>
+                <strong>Email</strong>
+              </a>
+              <a
+                class="contact-link magnetic"
+                data-contact-instagram
+                href="https://www.instagram.com/jaiwindesignstudio/"
+                rel="noopener noreferrer"
+              >
+                <span>IG</span>
+                <strong data-contact-instagram-label>Instagram</strong>
+              </a>
+            </div>
+            <address data-contact-address>
+              359/66, 2nd Street, Mini Sahaya Puram, Lionstown, Thoothukudi - 628001
+            </address>
+            <a class="map-link magnetic" data-map-link href="https://www.google.com/maps/search/?api=1&query=Jaiwin%20Design%20Studio%20Lionstown%20Thoothukudi" rel="noopener noreferrer">
+              Open map
+            </a>
+            <p class="business-hours" data-business-hours>Open Monday to Saturday, 9:30 AM - 8:30 PM</p>
+          </div>
+
+          <form class="contact-form" name="jaiwin-contact" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+            <input type="hidden" name="form-name" value="jaiwin-contact" />
+            <p class="hidden">
+              <label>Do not fill this out: <input name="bot-field" /></label>
+            </p>
+            <label>
+              <span data-contact-name-label>Your name</span>
+              <input name="name" type="text" autocomplete="name" required />
+            </label>
+            <label>
+              <span data-contact-phone-label>Phone or WhatsApp</span>
+              <input name="phone" type="tel" autocomplete="tel" required />
+            </label>
+            <label>
+              <span data-contact-project-type-label>Project type</span>
+              <select name="project-type" required>
+                <option value="">Select one</option>
+                <option>Banner / Flex</option>
+                <option>Invitation / Card</option>
+                <option>Logo / Branding</option>
+                <option>Photography</option>
+                <option>Web Design</option>
+                <option>Other Design Work</option>
+              </select>
+            </label>
+            <label>
+              <span data-contact-message-label>Message</span>
+              <textarea name="message" rows="5" placeholder="Tell us your event, size, date, and design idea." required></textarea>
+            </label>
+            <button class="button button--primary magnetic" data-contact-submit type="submit">Send enquiry</button>
+            <p class="form-note" data-form-success>
+              Thank you. We will reply soon with the next step.
+            </p>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer" aria-label="Footer">
+      <div>
+        <a class="brand brand--footer" href="#home">
+          <span class="brand__mark" aria-hidden="true">JD</span>
+          <span data-footer-business>Jaiwin Design Studio</span>
+        </a>
+        <p data-footer-text>
+          Designed for moments that deserve to be remembered clearly, colorfully, and beautifully.
+        </p>
+      </div>
+      <div class="footer__summary" data-footer-services>
+        Graphic design, banners, invitations, frames, gifts, photography, branding, and web design.
+      </div>
+      <div class="footer__contact">
+        <a data-footer-phone href="tel:+919597551805">+91 95975 51805</a>
+        <a data-footer-email href="mailto:jaiwindesignstudio@gmail.com">jaiwindesignstudio@gmail.com</a>
+        <a data-footer-instagram href="https://www.instagram.com/jaiwindesignstudio/" rel="noopener noreferrer">
+          @jaiwindesignstudio
+        </a>
+      </div>
+      <p class="footer__credit" data-footer-credit>
+        <span data-current-year>2026</span> Jaiwin Design Studio. Designed for Jaiwin Design Studio.
+      </p>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "eyebrowText": "Premium creative design studio in Thoothukudi",
+  "mainHeadline": "Designs That Make Your Moments",
+  "highlightedHeadlineWord": "Unforgettable",
+  "subheadline": "From vibrant flex banners and invitations to brand visuals, photo gifts, frames, and web design - Jaiwin Design Studio brings your ideas to life with color, clarity, and creativity.",
+  "primaryCtaLabel": "View Portfolio",
+  "primaryCtaLink": "#portfolio",
+  "secondaryCtaLabel": "Contact on WhatsApp",
+  "secondaryCtaLink": "whatsapp",
+  "heroImageFallback": "/assets/images/hero-fallback.svg",
+  "heroImageAlt": "Colorful abstract creative studio display",
+  "heroCardEyebrow": "Print",
+  "heroCardTitle": "Ready",
+  "heroCardText": "Digital + flex artwork",
+  "threeDMode": "custom-three"
+}

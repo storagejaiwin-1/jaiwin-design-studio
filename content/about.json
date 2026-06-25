@@ -1,0 +1,27 @@
+{
+  "enabled": true,
+  "sectionKicker": "About the studio",
+  "heading": "Color, craft, and clarity for every celebration.",
+  "highlightText": "Local studio energy with premium design polish - built for personal events, shops, campaigns, sports, and brands.",
+  "image": "/assets/images/hero-fallback.svg",
+  "imageAlt": "Jaiwin Design Studio creative workspace",
+  "paragraphs": [
+    "Jaiwin Design Studio is a creative design studio in Lionstown, Thoothukudi, helping customers turn ideas into vibrant visuals for print, digital sharing, and memorable gifting.",
+    "The studio creates banners, flex designs, invitations, cards, frames, photo gifts, photography visuals, logo design, posters, resumes, lamination work, and web design with a clear focus on readability and finish.",
+    "Whether it is a wedding banner, sports event, shop promotion, memorial design, birthday poster, or brand visual, every design is shaped to feel personal, polished, and ready to use."
+  ],
+  "stats": [
+    {
+      "value": "18+",
+      "label": "Creative services"
+    },
+    {
+      "value": "100%",
+      "label": "Editable website content"
+    },
+    {
+      "value": "Local",
+      "label": "Thoothukudi studio support"
+    }
+  ]
+}

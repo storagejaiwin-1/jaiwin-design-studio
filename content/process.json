@@ -1,0 +1,24 @@
+{
+  "enabled": true,
+  "sectionKicker": "Process",
+  "heading": "A simple path from idea to finished design.",
+  "subheading": "Clear previews, easy corrections, and final files ready for use.",
+  "steps": [
+    {
+      "title": "Share Your Idea",
+      "description": "Send the occasion, content, size, photos, references, and deadline."
+    },
+    {
+      "title": "Design Preview",
+      "description": "Review a polished draft prepared for your event, brand, or print need."
+    },
+    {
+      "title": "Final Corrections",
+      "description": "Request small edits so the layout, names, dates, and details are accurate."
+    },
+    {
+      "title": "Print / Delivery / Digital Handover",
+      "description": "Receive final artwork for printing, sharing, or studio production."
+    }
+  ]
+}

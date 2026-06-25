@@ -1,0 +1,29 @@
+{
+  "enabled": true,
+  "sectionKicker": "Contact",
+  "heading": "Tell us what you want to create.",
+  "subheading": "Share your event, shop, brand, or gifting idea and Jaiwin Design Studio will help shape it into a polished visual.",
+  "whatsappCtaText": "WhatsApp",
+  "emailCtaText": "Email",
+  "instagramCtaText": "Instagram",
+  "address": "359/66, 2nd Street, Mini Sahaya Puram, Lionstown, Thoothukudi - 628001",
+  "mapCtaText": "Open map",
+  "mapLink": "https://www.google.com/maps/search/?api=1&query=Jaiwin%20Design%20Studio%20Lionstown%20Thoothukudi",
+  "businessHours": "Open Monday to Saturday, 9:30 AM - 8:30 PM",
+  "nameLabel": "Your name",
+  "phoneLabel": "Phone or WhatsApp",
+  "projectTypeLabel": "Project type",
+  "projectTypePlaceholder": "Select one",
+  "projectTypeOptions": [
+    "Banner / Flex",
+    "Invitation / Card",
+    "Logo / Branding",
+    "Photography",
+    "Web Design",
+    "Other Design Work"
+  ],
+  "messageLabel": "Message",
+  "messagePlaceholder": "Tell us your event, size, date, and design idea.",
+  "submitLabel": "Send enquiry",
+  "contactFormSuccessMessage": "Thank you. We will reply soon with the next step."
+}

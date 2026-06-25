@@ -1,0 +1,42 @@
+{
+  "enabled": true,
+  "sectionKicker": "Portfolio",
+  "heading": "Recent visual stories.",
+  "subheading": "Featured posters, banners, flyers, and digital designs rendered directly from CMS content.",
+  "ctaLabel": "Start a project",
+  "ctaLink": "#contact",
+  "featuredLabel": "Featured",
+  "videoLabel": "Watch video",
+  "items": [
+    {
+      "title": "Beach Legends Premier League Sports Banner",
+      "description": "A bold coastal sports banner with tournament energy, strong title hierarchy, team atmosphere, and vivid action color.",
+      "category": "Sports Banner",
+      "image": "/assets/images/placeholder-portfolio-1.svg",
+      "videoUpload": "",
+      "externalVideoUrl": "",
+      "featured": true,
+      "altText": "Beach Legends Premier League sports banner design"
+    },
+    {
+      "title": "Jai Sports Badminton Tournament Flyer",
+      "description": "A fast, social-ready tournament flyer with court-inspired motion, sharp event details, and energetic contrast.",
+      "category": "Sports Flyer",
+      "image": "/assets/images/placeholder-portfolio-2.svg",
+      "videoUpload": "",
+      "externalVideoUrl": "",
+      "featured": true,
+      "altText": "Jai Sports Badminton Tournament flyer design"
+    },
+    {
+      "title": "21st Birthday Commemorative Poster",
+      "description": "A premium birthday poster with portrait focus, soft glow, celebration mood, and polished typography.",
+      "category": "Event Poster",
+      "image": "/assets/images/placeholder-portfolio-3.svg",
+      "videoUpload": "",
+      "externalVideoUrl": "",
+      "featured": true,
+      "altText": "21st birthday commemorative poster design"
+    }
+  ]
+}

@@ -1,0 +1,123 @@
+{
+  "enabled": true,
+  "sectionKicker": "Services",
+  "heading": "Design services for every visual need.",
+  "subheading": "Colorful, print-ready, and digital-ready creative work for events, brands, businesses, families, sports teams, and special moments.",
+  "featuredLabel": "Featured",
+  "items": [
+    {
+      "name": "Graphic Designing",
+      "description": "Polished layouts for promotions, announcements, events, brand materials, and social sharing.",
+      "iconName": "palette",
+      "featured": true
+    },
+    {
+      "name": "Banner / Flex",
+      "description": "High-impact flex artwork prepared with readable text, bold hierarchy, and print clarity.",
+      "iconName": "banner",
+      "featured": true
+    },
+    {
+      "name": "Photo Frames / Gifts",
+      "description": "Personalized photo frames, keepsakes, and gifting designs with a meaningful finish.",
+      "iconName": "gift",
+      "featured": true
+    },
+    {
+      "name": "Photography",
+      "description": "Photography support for events, products, memories, and design-ready visual content.",
+      "iconName": "camera",
+      "featured": false
+    },
+    {
+      "name": "Invitations / Cards",
+      "description": "Elegant cards and invitation layouts for weddings, birthdays, communions, and family events.",
+      "iconName": "invite",
+      "featured": true
+    },
+    {
+      "name": "Visiting Cards",
+      "description": "Clean business cards that make contact details clear and the brand easy to remember.",
+      "iconName": "card",
+      "featured": false
+    },
+    {
+      "name": "Web Designing",
+      "description": "Modern website visuals and static web experiences for local businesses and portfolios.",
+      "iconName": "web",
+      "featured": true
+    },
+    {
+      "name": "Lamination",
+      "description": "Practical lamination support for documents, photos, cards, and keepsake materials.",
+      "iconName": "lamination",
+      "featured": false
+    },
+    {
+      "name": "Wedding Banner",
+      "description": "Beautiful wedding flex and banner layouts with warm color, names, photos, and event details.",
+      "iconName": "wedding",
+      "featured": true
+    },
+    {
+      "name": "1st Communion Flex",
+      "description": "Graceful first communion designs for church, family, and celebration displays.",
+      "iconName": "communion",
+      "featured": false
+    },
+    {
+      "name": "Shop Banner",
+      "description": "Commercial banners for shops, offers, openings, and local business promotions.",
+      "iconName": "shop",
+      "featured": false
+    },
+    {
+      "name": "Sports Banner",
+      "description": "Energetic banners for tournaments, teams, players, leagues, and sports announcements.",
+      "iconName": "sports",
+      "featured": true
+    },
+    {
+      "name": "Political Banner",
+      "description": "Clear, respectful campaign and public announcement designs with strong visibility.",
+      "iconName": "public",
+      "featured": false
+    },
+    {
+      "name": "Memorial Banner",
+      "description": "Thoughtful memorial layouts with dignity, photo focus, and clean information.",
+      "iconName": "memorial",
+      "featured": false
+    },
+    {
+      "name": "Frame Lamination",
+      "description": "Photo and frame-focused lamination layouts for durable personal display pieces.",
+      "iconName": "frame",
+      "featured": false
+    },
+    {
+      "name": "Designed Invitation",
+      "description": "Custom invitation artwork shaped around your theme, words, photos, and celebration style.",
+      "iconName": "design",
+      "featured": false
+    },
+    {
+      "name": "Logo Design",
+      "description": "Simple, memorable logo concepts for shops, services, events, and emerging brands.",
+      "iconName": "logo",
+      "featured": true
+    },
+    {
+      "name": "Posters",
+      "description": "Poster layouts for birthdays, announcements, offers, events, and social media.",
+      "iconName": "poster",
+      "featured": false
+    },
+    {
+      "name": "Resume Design",
+      "description": "Professional resume layouts that organize experience clearly and look polished.",
+      "iconName": "resume",
+      "featured": false
+    }
+  ]
+}

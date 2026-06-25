@@ -1,0 +1,38 @@
+{
+  "enabled": true,
+  "sectionKicker": "Why choose us",
+  "highlightsHeading": "Sharp ideas, quick delivery, polished output.",
+  "highlightsSubheading": "Every detail is prepared to look strong on screen and in print.",
+  "highlights": [
+    {
+      "title": "Fast Turnaround",
+      "description": "Quick design support for events, shop needs, and urgent announcements.",
+      "iconName": "speed"
+    },
+    {
+      "title": "Creative Custom Designs",
+      "description": "Layouts made around your words, photos, style, and occasion.",
+      "iconName": "spark"
+    },
+    {
+      "title": "Print-Ready Quality",
+      "description": "Artwork prepared with practical sizing, clarity, and production needs in mind.",
+      "iconName": "print"
+    },
+    {
+      "title": "Local Trusted Studio",
+      "description": "Easy communication and nearby support from Lionstown, Thoothukudi.",
+      "iconName": "local"
+    },
+    {
+      "title": "Social Media Friendly Designs",
+      "description": "Posters and flyers that work beautifully on WhatsApp, Instagram, and screens.",
+      "iconName": "social"
+    },
+    {
+      "title": "Wedding & Event Specialists",
+      "description": "Memorable banners, cards, and celebration designs with a polished finish.",
+      "iconName": "event"
+    }
+  ]
+}
