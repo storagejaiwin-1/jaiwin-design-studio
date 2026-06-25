@@ -506,13 +506,13 @@ function renderServices(services) {
   const items = asArray(services.items);
   const featuredLabel = services.featuredLabel || FALLBACK_DATA.services.featuredLabel;
   const html = items
-    .map((item) => {
+    .map((item, index) => {
       const featured = Boolean(item.featured);
       return `
-        <article class="service-card${featured ? " is-featured" : ""}" data-tilt-card>
+        <article class="service-card${featured ? " is-featured" : ""}" data-tilt-card data-live-item="services.items.${index}">
           <span class="service-card__icon" aria-hidden="true">${escapeHTML(iconLabel(item.iconName, item.name))}</span>
-          <h3>${escapeHTML(item.name)}</h3>
-          <p>${escapeHTML(item.description)}</p>
+          <h3 data-live-text="services.items.${index}.name">${escapeHTML(item.name)}</h3>
+          <p data-live-text="services.items.${index}.description">${escapeHTML(item.description)}</p>
           ${featured ? `<span class="service-card__tag">${escapeHTML(featuredLabel)}</span>` : ""}
         </article>
       `;
@@ -538,7 +538,7 @@ function renderPortfolio(portfolio) {
   const featuredLabel = portfolio.featuredLabel || FALLBACK_DATA.portfolio.featuredLabel;
   const videoLabel = portfolio.videoLabel || FALLBACK_DATA.portfolio.videoLabel;
   const html = items
-    .map((item) => {
+    .map((item, index) => {
       const image = safeUrl(item.image, "/assets/images/placeholder-portfolio-1.svg");
       const alt = escapeHTML(item.altText || item.title || "Jaiwin Design Studio portfolio item");
       const videoHref = safeUrl(item.externalVideoUrl || item.videoUpload || "", "");
@@ -553,18 +553,18 @@ function renderPortfolio(portfolio) {
             })
           : "";
       return `
-        <article class="portfolio-card magnetic" data-tilt-card>
+        <article class="portfolio-card magnetic" data-tilt-card data-live-item="portfolio.items.${index}">
           <div class="portfolio-card__media">
-            <img class="portfolio-image" src="${escapeHTML(image)}" alt="${alt}" loading="lazy" decoding="async" />
+            <img class="portfolio-image" src="${escapeHTML(image)}" alt="${alt}" loading="lazy" decoding="async" data-live-image="portfolio.items.${index}.image" />
           </div>
           <div class="portfolio-card__body">
             <div class="portfolio-card__meta">
-              <span class="portfolio-card__category">${escapeHTML(item.category || "Design")}</span>
+              <span class="portfolio-card__category" data-live-text="portfolio.items.${index}.category">${escapeHTML(item.category || "Design")}</span>
               ${item.featured ? `<span class="portfolio-card__badge">${escapeHTML(featuredLabel)}</span>` : ""}
             </div>
             ${postedDate ? `<p class="portfolio-card__date">${escapeHTML(postedDate)}</p>` : ""}
-            <h3>${escapeHTML(item.title)}</h3>
-            <p>${escapeHTML(item.description)}</p>
+            <h3 data-live-text="portfolio.items.${index}.title">${escapeHTML(item.title)}</h3>
+            <p data-live-text="portfolio.items.${index}.description">${escapeHTML(item.description)}</p>
             ${
               hasVideo
                 ? `<a class="portfolio-card__video" href="${escapeHTML(videoHref)}" rel="noopener noreferrer">${escapeHTML(videoLabel)}</a>`
@@ -588,16 +588,16 @@ function renderAbout(about) {
   setAttr("[data-about-image]", "alt", about.imageAlt || FALLBACK_DATA.about.imageAlt);
 
   const paragraphHTML = asArray(about.paragraphs)
-    .map((paragraph) => `<p>${escapeHTML(paragraph)}</p>`)
+    .map((paragraph, index) => `<p data-live-text="about.paragraphs.${index}">${escapeHTML(paragraph)}</p>`)
     .join("");
   setHTML("[data-about-paragraphs]", paragraphHTML);
 
   const statsHTML = asArray(about.stats)
     .map(
-      (stat) => `
+      (stat, index) => `
         <div class="stat-card">
-          <strong>${escapeHTML(stat.value)}</strong>
-          <span>${escapeHTML(stat.label)}</span>
+          <strong data-live-text="about.stats.${index}.value">${escapeHTML(stat.value)}</strong>
+          <span data-live-text="about.stats.${index}.label">${escapeHTML(stat.label)}</span>
         </div>
       `
     )
@@ -653,10 +653,10 @@ function renderProcess(processData) {
   const html = asArray(processData.steps)
     .map(
       (step, index) => `
-        <article class="process-card" data-tilt-card>
+        <article class="process-card" data-tilt-card data-live-item="process.steps.${index}">
           <span class="process-card__index">${String(index + 1).padStart(2, "0")}</span>
-          <h3>${escapeHTML(step.title)}</h3>
-          <p>${escapeHTML(step.description)}</p>
+          <h3 data-live-text="process.steps.${index}.title">${escapeHTML(step.title)}</h3>
+          <p data-live-text="process.steps.${index}.description">${escapeHTML(step.description)}</p>
         </article>
       `
     )
@@ -673,11 +673,11 @@ function renderHomepageSections(sections) {
 
   const html = asArray(sections.highlights)
     .map(
-      (item) => `
-        <article class="highlight-card" data-tilt-card>
+      (item, index) => `
+        <article class="highlight-card" data-tilt-card data-live-item="homepageSections.highlights.${index}">
           <span class="highlight-card__icon" aria-hidden="true">${escapeHTML(iconLabel(item.iconName, item.title))}</span>
-          <h3>${escapeHTML(item.title)}</h3>
-          <p>${escapeHTML(item.description)}</p>
+          <h3 data-live-text="homepageSections.highlights.${index}.title">${escapeHTML(item.title)}</h3>
+          <p data-live-text="homepageSections.highlights.${index}.description">${escapeHTML(item.description)}</p>
         </article>
       `
     )
@@ -1163,6 +1163,12 @@ async function initApp() {
   const completeLoader = initLoader();
   const content = await loadAllContent();
   renderAll(content);
+  window.JaiwinSite = {
+    content,
+    renderAll,
+    getContent: () => content
+  };
+  window.dispatchEvent(new CustomEvent("jaiwin:content-ready", { detail: { content } }));
   initInteractions();
   completeLoader();
 }

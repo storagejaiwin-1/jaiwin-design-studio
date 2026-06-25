@@ -67,6 +67,7 @@ project-root/
 - Netlify Identity for admin login
 - Netlify Git Gateway for CMS edits
 - Decap CMS for the visual admin dashboard
+- Local live edit mode for editing directly on the website preview
 - No paid CMS
 - No paid hosting
 - No paid database
@@ -228,6 +229,38 @@ Then open:
 ```text
 http://localhost:8080
 ```
+
+## Local Live Edit Mode
+
+For direct editing on the website itself, use:
+
+```text
+http://127.0.0.1:8088/?edit=1
+```
+
+In Live Edit Mode:
+
+- Click visible website text and type directly on the page.
+- Use "Add work" to add a new portfolio/work post at the top.
+- Click an image, then use "Upload image" to save a new image into `assets/uploads`.
+- Use the color controls to change the website colors.
+- Click "Choose folder" once and select this website folder.
+- Click "Save changes" to write the updated JSON files into `content/`.
+- Commit and push from VS Code to update GitHub and trigger Netlify.
+
+This mode is local-first. It edits your project files directly on your computer. It appears only when `?edit=1` is in the URL.
+
+## Local Admin Uploads
+
+The `/admin` CMS also supports local saving because this project has `local_backend: true`.
+
+Before using `/admin` locally, run the local CMS helper:
+
+```bash
+npm run cms
+```
+
+Keep the website preview server running separately. The CMS helper listens on port `8081`; the website preview in this project is currently running on port `8088`.
 
 ## Notes For Safe Editing
 

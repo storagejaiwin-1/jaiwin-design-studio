@@ -1,0 +1,183 @@
+body.live-edit-mode {
+  padding-bottom: 0;
+}
+
+.live-editor-panel {
+  position: fixed;
+  top: 98px;
+  right: 16px;
+  z-index: 12000;
+  display: grid;
+  width: min(360px, calc(100vw - 32px));
+  max-height: calc(100vh - 116px);
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius);
+  color: #ffffff;
+  background: rgba(7, 8, 29, 0.92);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.36);
+  backdrop-filter: blur(18px);
+  overflow: auto;
+}
+
+.live-editor-panel strong {
+  font-size: 1rem;
+}
+
+.live-editor-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.live-editor-button,
+.live-editor-link {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 11px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius);
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 0.82rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.live-editor-button:hover,
+.live-editor-link:hover {
+  border-color: rgba(141, 241, 255, 0.72);
+  background: rgba(141, 241, 255, 0.12);
+}
+
+.live-editor-button.is-primary {
+  color: #07101d;
+  border-color: transparent;
+  background: linear-gradient(135deg, #ffffff, #8df1ff 42%, #ffdf8f);
+}
+
+.live-editor-selected-label {
+  margin: 0;
+  color: #8df1ff;
+  font-size: 0.8rem;
+  font-weight: 850;
+  overflow-wrap: anywhere;
+}
+
+.live-editor-panel label {
+  display: grid;
+  gap: 7px;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.live-editor-panel textarea {
+  width: 100%;
+  min-height: 110px;
+  resize: vertical;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: var(--radius);
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.26);
+  padding: 10px;
+  outline: none;
+}
+
+.live-editor-colors {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.live-editor-color {
+  display: grid;
+  grid-template-columns: 1fr 42px;
+  gap: 7px;
+  align-items: center;
+  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.live-editor-color span {
+  min-width: 0;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.76rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.live-editor-color input {
+  width: 42px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+}
+
+.live-editor-status {
+  min-height: 38px;
+  margin: 0;
+  padding: 10px;
+  border: 1px solid rgba(141, 241, 255, 0.18);
+  border-radius: var(--radius);
+  color: var(--muted);
+  background: rgba(141, 241, 255, 0.08);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+[data-live-text],
+[data-live-image] {
+  outline-offset: 5px;
+  transition: outline-color 160ms ease, box-shadow 160ms ease;
+}
+
+body.live-edit-mode [data-live-text],
+body.live-edit-mode [data-live-image] {
+  cursor: text;
+}
+
+body.live-edit-mode [data-live-image] {
+  cursor: pointer;
+}
+
+body.live-edit-mode [data-live-text]:hover,
+body.live-edit-mode [data-live-image]:hover {
+  outline: 2px dashed rgba(141, 241, 255, 0.72);
+}
+
+.live-edit-selected {
+  outline: 3px solid #ffcf69 !important;
+  box-shadow: 0 0 0 7px rgba(255, 207, 105, 0.16);
+}
+
+body.live-edit-mode [contenteditable="true"] {
+  caret-color: #ffcf69;
+}
+
+.live-editor-file-input {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .live-editor-panel {
+    top: auto;
+    right: 10px;
+    bottom: 10px;
+    left: 10px;
+    width: auto;
+    max-height: 46vh;
+  }
+
+  .live-editor-colors {
+    grid-template-columns: 1fr;
+  }
+}

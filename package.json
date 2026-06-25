@@ -1,0 +1,14 @@
+{
+  "name": "jaiwin-design-studio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static Jaiwin Design Studio website with Decap CMS and local live edit mode.",
+  "scripts": {
+    "preview": "python -m http.server 8088 --bind 127.0.0.1",
+    "cms": "decap-server",
+    "check": "node --check main.js && node --check admin/preview.js && node --check editor.js"
+  },
+  "devDependencies": {
+    "decap-server": "^3.9.1"
+  }
+}
