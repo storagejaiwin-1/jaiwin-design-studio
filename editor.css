@@ -87,6 +87,44 @@ body.live-edit-mode {
   outline: none;
 }
 
+.live-editor-panel input,
+.live-editor-panel select {
+  width: 100%;
+  min-height: 38px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: var(--radius);
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.26);
+  padding: 8px 10px;
+  outline: none;
+}
+
+.live-editor-panel select option {
+  color: #07101d;
+}
+
+.live-editor-group {
+  display: grid;
+  gap: 9px;
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.live-editor-group-title {
+  margin: 0;
+  color: #ffffff;
+  font-size: 0.86rem;
+  font-weight: 900;
+}
+
+.live-editor-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
 .live-editor-colors {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -167,6 +205,23 @@ body.live-edit-mode [contenteditable="true"] {
   display: none;
 }
 
+.live-editor-upload-list {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.live-editor-upload-list li {
+  padding: 8px;
+  border-radius: 6px;
+  color: var(--muted);
+  background: rgba(0, 0, 0, 0.22);
+  font-size: 0.78rem;
+  overflow-wrap: anywhere;
+}
+
 @media (max-width: 760px) {
   .live-editor-panel {
     top: auto;
@@ -178,6 +233,10 @@ body.live-edit-mode [contenteditable="true"] {
   }
 
   .live-editor-colors {
+    grid-template-columns: 1fr;
+  }
+
+  .live-editor-grid {
     grid-template-columns: 1fr;
   }
 }

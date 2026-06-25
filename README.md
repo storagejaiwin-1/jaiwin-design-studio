@@ -242,13 +242,22 @@ In Live Edit Mode:
 
 - Click visible website text and type directly on the page.
 - Use "Add work" to add a new portfolio/work post at the top.
+- Use "Add images by category" to choose Sports Banner, Invitation, Logo Design, Shop Banner, or another category and upload one or more images into that category.
 - Click an image, then use "Upload image" to save a new image into `assets/uploads`.
 - Use the color controls to change the website colors.
-- Click "Choose folder" once and select this website folder.
+- When running with `npm run preview`, uploads and saves are written directly into the website folder.
 - Click "Save changes" to write the updated JSON files into `content/`.
 - Commit and push from VS Code to update GitHub and trigger Netlify.
 
 This mode is local-first. It edits your project files directly on your computer. It appears only when `?edit=1` is in the URL.
+
+The local preview command is now:
+
+```bash
+npm run preview
+```
+
+It runs a local editor server on port `8088`. That server fixes local image uploads by accepting images from the browser and saving them into `assets/uploads`.
 
 ## Local Admin Uploads
 

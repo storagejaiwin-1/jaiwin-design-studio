@@ -83,8 +83,22 @@
     ["Highlight", "siteSettings.highlightColor", "--cyan"]
   ]);
 
+  const PORTFOLIO_CATEGORIES = Object.freeze([
+    "Sports Banner",
+    "Sports Flyer",
+    "Event Poster",
+    "Wedding Banner",
+    "Invitation",
+    "Logo Design",
+    "Shop Banner",
+    "Memorial Banner",
+    "Web Design",
+    "Other"
+  ]);
+
   let content = null;
   let rootHandle = null;
+  let localServerReady = false;
   let selectedElement = null;
   let selectedPath = "";
   let selectedType = "text";
@@ -94,6 +108,11 @@
   let imageButton = null;
   let statusBox = null;
   let fileInput = null;
+  let categorySelect = null;
+  let categoryTitleInput = null;
+  let categoryDescriptionInput = null;
+  let categoryFileInput = null;
+  let uploadList = null;
 
   function pathParts(path) {
     return String(path || "")
@@ -115,6 +134,19 @@
 
   function status(message) {
     if (statusBox) statusBox.textContent = message;
+  }
+
+  async function checkLocalServer() {
+    try {
+      const response = await fetch("/_local/status", { cache: "no-store" });
+      if (!response.ok) throw new Error("Local server not ready");
+      const details = await response.json();
+      localServerReady = Boolean(details.ok);
+      return details;
+    } catch {
+      localServerReady = false;
+      return null;
+    }
   }
 
   function cleanText(value) {
@@ -224,8 +256,27 @@
     await writable.close();
   }
 
+  async function saveWithLocalServer() {
+    const response = await fetch("/_local/content", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ content })
+    });
+    if (!response.ok) {
+      const message = await response.text();
+      throw new Error(message || "Could not save through the local server.");
+    }
+    return response.json();
+  }
+
   async function saveContentFiles() {
     if (!content) return;
+    if (localServerReady) {
+      await saveWithLocalServer();
+      status("Saved into the website files. Commit and push from VS Code to update GitHub/Netlify.");
+      return;
+    }
+
     if (!rootHandle) await chooseWebsiteFolder();
     if (!rootHandle) return;
 
@@ -248,13 +299,24 @@
     return `${base || "jaiwin-work"}-${Date.now()}.${extension || "jpg"}`;
   }
 
-  async function uploadSelectedImage(file) {
-    if (!selectedPath || selectedType !== "image" || !file) {
-      status("Click a website image first, then upload.");
-      return;
+  async function saveImageFile(file) {
+    if (localServerReady) {
+      const data = new FormData();
+      data.append("image", file);
+      const response = await fetch("/_local/upload", {
+        method: "POST",
+        body: data
+      });
+      if (!response.ok) {
+        const message = await response.text();
+        throw new Error(message || "Could not upload through the local server.");
+      }
+      const result = await response.json();
+      return result.path;
     }
+
     if (!rootHandle) await chooseWebsiteFolder();
-    if (!rootHandle) return;
+    if (!rootHandle) return "";
 
     const fileName = safeFileName(file);
     const uploads = await getDirectory(rootHandle, ["assets", "uploads"], { create: true });
@@ -262,14 +324,76 @@
     const writable = await imageHandle.createWritable();
     await writable.write(file);
     await writable.close();
+    return `/assets/uploads/${fileName}`;
+  }
 
-    const publicPath = `/assets/uploads/${fileName}`;
+  async function uploadSelectedImage(file) {
+    if (!selectedPath || selectedType !== "image" || !file) {
+      status("Click a website image first, then upload.");
+      return;
+    }
+
+    const publicPath = await saveImageFile(file);
+    if (!publicPath) return;
     syncFieldValue(selectedPath, publicPath);
     if (selectedElement && selectedElement.tagName === "IMG") {
       selectedElement.src = publicPath;
     }
     if (fieldInput) fieldInput.value = publicPath;
     status("Image saved locally. Press Save changes to update the website content file.");
+  }
+
+  async function addCategoryImages(files) {
+    const selectedFiles = Array.from(files || []);
+    if (!selectedFiles.length) {
+      status("Choose one or more images first.");
+      return;
+    }
+    if (!content?.portfolio) return;
+    if (!Array.isArray(content.portfolio.items)) content.portfolio.items = [];
+
+    const category = categorySelect?.value || "Other";
+    const baseTitle = cleanText(categoryTitleInput?.value || "");
+    const baseDescription =
+      cleanText(categoryDescriptionInput?.value || "") || `New ${category.toLowerCase()} design from Jaiwin Design Studio.`;
+
+    setUploadList([]);
+    const created = [];
+    for (const file of selectedFiles) {
+      status(`Uploading ${file.name}...`);
+      const imagePath = await saveImageFile(file);
+      if (!imagePath) continue;
+      const title = baseTitle || file.name.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " ");
+      const item = {
+        title,
+        description: baseDescription,
+        category,
+        postedDate: new Date().toISOString().slice(0, 10),
+        image: imagePath,
+        videoUpload: "",
+        externalVideoUrl: "",
+        featured: false,
+        altText: `${title} design`
+      };
+      content.portfolio.items.unshift(item);
+      created.push(`${category}: ${file.name}`);
+    }
+
+    window.JaiwinSite.renderAll(content);
+    bindEditableElements();
+    setUploadList(created);
+    document.getElementById("portfolio")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    status(`Added ${created.length} image${created.length === 1 ? "" : "s"} to ${category}. Press Save changes.`);
+  }
+
+  function setUploadList(items) {
+    if (!uploadList) return;
+    uploadList.innerHTML = "";
+    items.forEach((item) => {
+      const row = document.createElement("li");
+      row.textContent = item;
+      uploadList.append(row);
+    });
   }
 
   function addWorkPost() {
@@ -347,6 +471,57 @@
       fileInput.value = "";
     });
 
+    const categoryGroup = document.createElement("div");
+    categoryGroup.className = "live-editor-group";
+    const categoryHeading = document.createElement("p");
+    categoryHeading.className = "live-editor-group-title";
+    categoryHeading.textContent = "Add images by category";
+
+    const categoryGrid = document.createElement("div");
+    categoryGrid.className = "live-editor-grid";
+
+    const categoryLabel = document.createElement("label");
+    categoryLabel.textContent = "Category";
+    categorySelect = document.createElement("select");
+    PORTFOLIO_CATEGORIES.forEach((category) => {
+      const option = document.createElement("option");
+      option.value = category;
+      option.textContent = category;
+      categorySelect.append(option);
+    });
+    categoryLabel.append(categorySelect);
+
+    const titleLabel = document.createElement("label");
+    titleLabel.textContent = "Title";
+    categoryTitleInput = document.createElement("input");
+    categoryTitleInput.placeholder = "Leave empty to use file name";
+    titleLabel.append(categoryTitleInput);
+
+    categoryGrid.append(categoryLabel, titleLabel);
+
+    const descriptionLabel = document.createElement("label");
+    descriptionLabel.textContent = "Description";
+    categoryDescriptionInput = document.createElement("textarea");
+    categoryDescriptionInput.rows = 3;
+    categoryDescriptionInput.placeholder = "Short text for these uploaded designs";
+    descriptionLabel.append(categoryDescriptionInput);
+
+    categoryFileInput = document.createElement("input");
+    categoryFileInput.type = "file";
+    categoryFileInput.accept = "image/png,image/jpeg,image/webp,image/gif";
+    categoryFileInput.multiple = true;
+    categoryFileInput.className = "live-editor-file-input";
+    categoryFileInput.addEventListener("change", () => {
+      addCategoryImages(categoryFileInput.files).catch((error) => status(error.message || "Upload failed."));
+      categoryFileInput.value = "";
+    });
+
+    const uploadCategoryButton = button("Choose category images", () => categoryFileInput.click());
+    uploadList = document.createElement("ul");
+    uploadList.className = "live-editor-upload-list";
+
+    categoryGroup.append(categoryHeading, categoryGrid, descriptionLabel, uploadCategoryButton, categoryFileInput, uploadList);
+
     const colorWrap = document.createElement("div");
     colorWrap.className = "live-editor-colors";
     COLOR_FIELDS.forEach(([label, path, cssVar]) => {
@@ -364,9 +539,9 @@
 
     statusBox = document.createElement("p");
     statusBox.className = "live-editor-status";
-    statusBox.textContent = "Click any highlighted text to edit directly. Choose the website folder before saving.";
+    statusBox.textContent = "Checking local editor server...";
 
-    panel.append(title, topRow, selectedLabel, fieldLabel, imageButton, fileInput, colorWrap, statusBox);
+    panel.append(title, topRow, categoryGroup, selectedLabel, fieldLabel, imageButton, fileInput, colorWrap, statusBox);
     document.body.append(panel);
   }
 
@@ -414,13 +589,18 @@
     });
   }
 
-  function initEditor(loadedContent) {
+  async function initEditor(loadedContent) {
     content = loadedContent;
     document.body.classList.add("live-edit-mode");
     bindEditableElements();
     createPanel();
     bindEvents();
-    status("Live editor ready. Choose the website folder before saving or uploading.");
+    const server = await checkLocalServer();
+    if (server?.ok) {
+      status(server.remote ? "Live editor ready. Local saving and uploads are active." : "Live editor ready. Uploads work locally; GitHub remote is not attached yet.");
+    } else {
+      status("Live editor ready. Local server is not active, so choose the website folder before saving or uploading.");
+    }
   }
 
   if (window.JaiwinSite?.content) {
