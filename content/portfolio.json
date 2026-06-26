@@ -9,17 +9,6 @@
   "videoLabel": "Watch video",
   "items": [
     {
-      "title": "6x10",
-      "description": "New sports banner design from Jaiwin Design Studio.",
-      "category": "Sports Banner",
-      "postedDate": "2026-06-26",
-      "image": "/assets/uploads/6x10-printready-topaz-1782454264117-b8237f.jpg",
-      "videoUpload": "",
-      "externalVideoUrl": "",
-      "featured": false,
-      "altText": "6x10 printready topaz design"
-    },
-    {
       "title": "New work title",
       "description": "Write a short description for this design.",
       "category": "Other",
