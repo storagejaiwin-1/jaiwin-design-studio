@@ -2,6 +2,25 @@ body.live-edit-mode {
   padding-bottom: 0;
 }
 
+.live-edit-launcher {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 11000;
+  display: inline-flex;
+  min-height: 46px;
+  align-items: center;
+  justify-content: center;
+  padding: 11px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: var(--radius);
+  color: #07101d;
+  background: linear-gradient(135deg, #ffffff, #8df1ff 42%, #ffdf8f);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.34);
+  font-size: 0.88rem;
+  font-weight: 900;
+}
+
 .live-editor-panel {
   position: fixed;
   top: 98px;
@@ -71,9 +90,15 @@ body.live-edit-mode {
 }
 
 .live-editor-button.is-danger {
-  border-color: rgba(255, 105, 105, 0.45);
+  border-color: rgba(255, 62, 62, 0.9);
   color: #ffffff;
-  background: rgba(255, 79, 79, 0.18);
+  background: #d91f2c;
+  box-shadow: 0 10px 28px rgba(217, 31, 44, 0.28);
+}
+
+.live-editor-button.is-danger:hover {
+  border-color: #ffb4b4;
+  background: #f03242;
 }
 
 .live-editor-selected-label {
@@ -204,6 +229,50 @@ body.live-edit-mode [data-live-image] {
   cursor: pointer;
 }
 
+body.live-edit-mode .portfolio-card__media,
+body.live-edit-mode .about__media,
+body.live-edit-mode .hero__visual {
+  position: relative;
+}
+
+.live-image-actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 8;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+body.live-edit-mode .portfolio-card__media:hover .live-image-actions,
+body.live-edit-mode .about__media:hover .live-image-actions,
+body.live-edit-mode .hero__visual:hover .live-image-actions,
+.live-image-actions:focus-within {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.live-image-actions button {
+  min-height: 32px;
+  border: 0;
+  border-radius: 6px;
+  color: #07101d;
+  background: #ffffff;
+  padding: 6px 9px;
+  font-size: 0.72rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.live-image-actions button.is-danger {
+  color: #ffffff;
+  background: #d91f2c;
+}
+
 body.live-edit-mode [data-live-text]:hover,
 body.live-edit-mode [data-live-image]:hover {
   outline: 2px dashed rgba(141, 241, 255, 0.72);
@@ -270,7 +339,8 @@ body.live-edit-mode [contenteditable="true"] {
 }
 
 .live-image-menu button.is-danger {
-  color: #ffb4b4;
+  color: #ffffff;
+  background: #d91f2c;
 }
 
 @media (max-width: 760px) {
@@ -282,6 +352,16 @@ body.live-edit-mode [contenteditable="true"] {
     width: auto;
     max-height: 58vh;
     padding: 12px;
+  }
+
+  .live-edit-launcher {
+    right: 10px;
+    bottom: 10px;
+  }
+
+  .live-image-actions {
+    opacity: 1;
+    transform: none;
   }
 
   .live-editor-colors {

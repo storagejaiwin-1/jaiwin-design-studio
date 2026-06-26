@@ -189,6 +189,45 @@ app.post("/_local/content", async (request, response) => {
   });
 });
 
+app.post("/_local/publish", async (request, response) => {
+  const message = String(request.body?.message || "Update website content").trim().slice(0, 120);
+  const statusBefore = await runGit(["status", "--short"]);
+  if (!statusBefore.text) {
+    response.json({
+      ok: true,
+      changed: false,
+      message: "No changes to publish.",
+      ...(await gitStatus())
+    });
+    return;
+  }
+
+  const add = await runGit(["add", "-A"]);
+  if (!add.ok) {
+    response.status(500).send(add.text || "Could not stage changes.");
+    return;
+  }
+
+  const commit = await runGit(["-c", "user.name=storagejaiwin-1", "-c", "user.email=262747217+storagejaiwin-1@users.noreply.github.com", "commit", "-m", message]);
+  if (!commit.ok && !commit.text.includes("nothing to commit")) {
+    response.status(500).send(commit.text || "Could not commit changes.");
+    return;
+  }
+
+  const push = await runGit(["push", "-u", "origin", "main"]);
+  if (!push.ok) {
+    response.status(500).send(push.text || "Could not push to GitHub.");
+    return;
+  }
+
+  response.json({
+    ok: true,
+    changed: true,
+    message: push.text || "Published to GitHub.",
+    ...(await gitStatus())
+  });
+});
+
 app.use(express.static(root, {
   extensions: ["html"]
 }));

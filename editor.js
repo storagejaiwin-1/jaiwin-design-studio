@@ -3,7 +3,16 @@
 
   const params = new URLSearchParams(window.location.search);
   const editMode = params.get("edit") === "1" || params.has("edit");
-  if (!editMode) return;
+  if (!editMode) {
+    window.addEventListener("DOMContentLoaded", () => {
+      const launcher = document.createElement("a");
+      launcher.className = "live-edit-launcher";
+      launcher.href = `${window.location.pathname}?edit=1`;
+      launcher.textContent = "Edit website";
+      document.body.append(launcher);
+    });
+    return;
+  }
 
   const CONTENT_FILES = Object.freeze({
     siteSettings: "site-settings.json",
@@ -238,6 +247,42 @@
   function bindEditableElements() {
     applyStaticBindings();
     makeTextEditable();
+    addImageActionOverlays();
+  }
+
+  function addImageActionOverlays() {
+    document.querySelectorAll("[data-live-image]").forEach((image) => {
+      const parent = image.parentElement;
+      if (!parent || parent.querySelector(":scope > .live-image-actions")) return;
+      const actions = document.createElement("div");
+      actions.className = "live-image-actions";
+
+      const updateButton = document.createElement("button");
+      updateButton.type = "button";
+      updateButton.textContent = "Update";
+      updateButton.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        selectElement(image);
+        updateSelectedImage();
+      });
+
+      const deleteButton = document.createElement("button");
+      deleteButton.type = "button";
+      deleteButton.className = "is-danger";
+      deleteButton.textContent = imagePathToItemPath(image.dataset.liveImage) ? "Delete card" : "Delete";
+      deleteButton.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        selectElement(image);
+        deleteSelectedImage(Boolean(imagePathToItemPath(image.dataset.liveImage))).catch((error) =>
+          status(error.message || "Delete failed.")
+        );
+      });
+
+      actions.append(updateButton, deleteButton);
+      parent.append(actions);
+    });
   }
 
   async function ensureWritePermission(handle) {
@@ -332,6 +377,26 @@
       )
     );
     status("Saved into the website folder. Commit and push from VS Code to update GitHub/Netlify.");
+  }
+
+  async function publishChanges() {
+    await saveContentFiles();
+    if (!localServerReady) {
+      status("Saved locally. Start npm run preview to publish from the browser.");
+      return;
+    }
+    status("Publishing to GitHub...");
+    const response = await fetch("/_local/publish", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: "Update website content" })
+    });
+    if (!response.ok) {
+      const message = await response.text();
+      throw new Error(message || "Publish failed.");
+    }
+    const result = await response.json();
+    status(result.changed ? "Published to GitHub. Netlify should deploy from main." : "No changes to publish.");
   }
 
   function safeFileName(file) {
@@ -546,6 +611,7 @@
 
     const chooseButton = button("Choose folder", chooseWebsiteFolder);
     const saveButton = button("Save changes", saveContentFiles, true);
+    const publishButton = button("Save + publish", publishChanges, true);
     const addButton = button("Add work", addWorkPost);
     const cleanupButton = button("Clean missing images", cleanupMissingUploads);
     const exitLink = document.createElement("a");
@@ -553,7 +619,7 @@
     exitLink.href = window.location.pathname;
     exitLink.textContent = "Exit";
 
-    topRow.append(saveButton, addButton, cleanupButton, chooseButton, exitLink);
+    topRow.append(saveButton, publishButton, addButton, cleanupButton, chooseButton, exitLink);
 
     selectedLabel = document.createElement("p");
     selectedLabel.className = "live-editor-selected-label";
