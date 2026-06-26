@@ -106,6 +106,8 @@
   let fieldInput = null;
   let selectedLabel = null;
   let imageButton = null;
+  let deleteImageButton = null;
+  let deleteCardButton = null;
   let statusBox = null;
   let fileInput = null;
   let categorySelect = null;
@@ -113,6 +115,7 @@
   let categoryDescriptionInput = null;
   let categoryFileInput = null;
   let uploadList = null;
+  let imageMenu = null;
 
   function pathParts(path) {
     return String(path || "")
@@ -130,6 +133,26 @@
     const last = parts.pop();
     const target = parts.reduce((value, part) => value[part], source);
     if (target && last !== undefined) target[last] = nextValue;
+  }
+
+  function removeByPath(source, path) {
+    const parts = pathParts(path);
+    const last = parts.pop();
+    const target = parts.reduce((value, part) => (value == null ? undefined : value[part]), source);
+    if (Array.isArray(target) && typeof last === "number") {
+      target.splice(last, 1);
+      return true;
+    }
+    if (target && last !== undefined) {
+      delete target[last];
+      return true;
+    }
+    return false;
+  }
+
+  function imagePathToItemPath(path) {
+    const match = String(path || "").match(/^portfolio\.items\.(\d+)\.image$/);
+    return match ? `portfolio.items.${match[1]}` : "";
   }
 
   function status(message) {
@@ -200,7 +223,16 @@
       fieldInput.value = selectedType === "image" ? String(getByPath(content, selectedPath) || "") : getTextFromElement(element);
     }
     if (imageButton) imageButton.disabled = selectedType !== "image";
+    if (deleteImageButton) deleteImageButton.disabled = selectedType !== "image";
+    if (deleteCardButton) deleteCardButton.disabled = selectedType !== "image";
     status(selectedType === "image" ? "Use Upload image to replace this picture." : "Type directly on the page or edit the text box here.");
+  }
+
+  function closeImageMenu() {
+    if (imageMenu) {
+      imageMenu.remove();
+      imageMenu = null;
+    }
   }
 
   function bindEditableElements() {
@@ -267,6 +299,20 @@
       throw new Error(message || "Could not save through the local server.");
     }
     return response.json();
+  }
+
+  async function deleteUploadWithLocalServer(publicPath) {
+    if (!localServerReady || !publicPath.startsWith("/assets/uploads/")) return false;
+    const response = await fetch("/_local/delete-upload", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ path: publicPath })
+    });
+    if (!response.ok) {
+      const message = await response.text();
+      throw new Error(message || "Could not delete the uploaded image.");
+    }
+    return true;
   }
 
   async function saveContentFiles() {
@@ -341,6 +387,63 @@
     }
     if (fieldInput) fieldInput.value = publicPath;
     status("Image saved locally. Press Save changes to update the website content file.");
+  }
+
+  async function updateSelectedImage() {
+    if (!selectedElement || selectedType !== "image") {
+      status("Right-click or click an image first.");
+      return;
+    }
+    fileInput.click();
+  }
+
+  async function deleteSelectedImage(removeCard) {
+    if (!selectedPath || selectedType !== "image") {
+      status("Right-click or click an image first.");
+      return;
+    }
+
+    const currentPath = String(getByPath(content, selectedPath) || "");
+    if (currentPath.startsWith("/assets/uploads/")) {
+      await deleteUploadWithLocalServer(currentPath);
+    }
+
+    const itemPath = imagePathToItemPath(selectedPath);
+    if (removeCard && itemPath) {
+      removeByPath(content, itemPath);
+      status("Work card deleted. Press Save changes to update the content file.");
+    } else {
+      syncFieldValue(selectedPath, "/assets/images/placeholder-portfolio-1.svg");
+      status("Image removed from this item. Press Save changes.");
+    }
+
+    window.JaiwinSite.renderAll(content);
+    bindEditableElements();
+    clearSelection();
+    selectedElement = null;
+    closeImageMenu();
+  }
+
+  async function cleanupMissingUploads() {
+    if (!localServerReady) {
+      status("Cleanup needs the local editor server.");
+      return;
+    }
+    const response = await fetch("/_local/cleanup-missing-uploads", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ content })
+    });
+    if (!response.ok) {
+      const message = await response.text();
+      throw new Error(message || "Could not clean missing images.");
+    }
+    const result = await response.json();
+    content = result.content;
+    window.JaiwinSite.content = content;
+    window.JaiwinSite.renderAll(content);
+    bindEditableElements();
+    status(result.removed.length ? `Removed ${result.removed.length} missing image card(s). Press Save changes.` : "No missing uploaded images found.");
   }
 
   async function addCategoryImages(files) {
@@ -430,18 +533,27 @@
     const title = document.createElement("strong");
     title.textContent = "Live Edit Mode";
 
+    const header = document.createElement("div");
+    header.className = "live-editor-header";
+    const collapseButton = button("Hide", () => {
+      panel.classList.toggle("is-collapsed");
+      collapseButton.textContent = panel.classList.contains("is-collapsed") ? "Show" : "Hide";
+    });
+    header.append(title, collapseButton);
+
     const topRow = document.createElement("div");
     topRow.className = "live-editor-row";
 
     const chooseButton = button("Choose folder", chooseWebsiteFolder);
     const saveButton = button("Save changes", saveContentFiles, true);
     const addButton = button("Add work", addWorkPost);
+    const cleanupButton = button("Clean missing images", cleanupMissingUploads);
     const exitLink = document.createElement("a");
     exitLink.className = "live-editor-link";
     exitLink.href = window.location.pathname;
     exitLink.textContent = "Exit";
 
-    topRow.append(chooseButton, saveButton, addButton, exitLink);
+    topRow.append(saveButton, addButton, cleanupButton, chooseButton, exitLink);
 
     selectedLabel = document.createElement("p");
     selectedLabel.className = "live-editor-selected-label";
@@ -461,6 +573,10 @@
 
     imageButton = button("Upload image", () => fileInput.click());
     imageButton.disabled = true;
+    deleteImageButton = button("Delete image", () => deleteSelectedImage(false), false, "is-danger");
+    deleteImageButton.disabled = true;
+    deleteCardButton = button("Delete work card", () => deleteSelectedImage(true), false, "is-danger");
+    deleteCardButton.disabled = true;
     fileInput = document.createElement("input");
     fileInput.type = "file";
     fileInput.accept = "image/png,image/jpeg,image/webp,image/gif";
@@ -541,14 +657,18 @@
     statusBox.className = "live-editor-status";
     statusBox.textContent = "Checking local editor server...";
 
-    panel.append(title, topRow, categoryGroup, selectedLabel, fieldLabel, imageButton, fileInput, colorWrap, statusBox);
+    const imageActions = document.createElement("div");
+    imageActions.className = "live-editor-row";
+    imageActions.append(imageButton, deleteImageButton, deleteCardButton);
+
+    panel.append(header, topRow, categoryGroup, selectedLabel, fieldLabel, imageActions, fileInput, colorWrap, statusBox);
     document.body.append(panel);
   }
 
-  function button(label, action, primary = false) {
+  function button(label, action, primary = false, extraClass = "") {
     const element = document.createElement("button");
     element.type = "button";
-    element.className = `live-editor-button${primary ? " is-primary" : ""}`;
+    element.className = `live-editor-button${primary ? " is-primary" : ""}${extraClass ? ` ${extraClass}` : ""}`;
     element.textContent = label;
     element.addEventListener("click", async () => {
       try {
@@ -569,6 +689,19 @@
       selectElement(target);
     });
 
+    document.addEventListener("contextmenu", (event) => {
+      const target = event.target.closest("[data-live-image]");
+      if (!target || panel?.contains(target)) return;
+      event.preventDefault();
+      event.stopPropagation();
+      selectElement(target);
+      openImageMenu(event.clientX, event.clientY);
+    });
+
+    document.addEventListener("click", (event) => {
+      if (imageMenu && !imageMenu.contains(event.target)) closeImageMenu();
+    });
+
     document.addEventListener("input", (event) => {
       const target = event.target.closest("[data-live-text]");
       if (!target || panel?.contains(target)) return;
@@ -587,6 +720,45 @@
         target.blur();
       }
     });
+  }
+
+  function openImageMenu(x, y) {
+    closeImageMenu();
+    imageMenu = document.createElement("div");
+    imageMenu.className = "live-image-menu";
+
+    const updateButton = document.createElement("button");
+    updateButton.type = "button";
+    updateButton.textContent = "Update image";
+    updateButton.addEventListener("click", () => {
+      closeImageMenu();
+      updateSelectedImage();
+    });
+
+    const deleteImageButton = document.createElement("button");
+    deleteImageButton.type = "button";
+    deleteImageButton.className = "is-danger";
+    deleteImageButton.textContent = "Delete image only";
+    deleteImageButton.addEventListener("click", () => {
+      deleteSelectedImage(false).catch((error) => status(error.message || "Delete failed."));
+    });
+
+    const deleteCardButton = document.createElement("button");
+    deleteCardButton.type = "button";
+    deleteCardButton.className = "is-danger";
+    deleteCardButton.textContent = imagePathToItemPath(selectedPath) ? "Delete work card" : "Clear this image";
+    deleteCardButton.addEventListener("click", () => {
+      deleteSelectedImage(true).catch((error) => status(error.message || "Delete failed."));
+    });
+
+    imageMenu.append(updateButton, deleteImageButton, deleteCardButton);
+    document.body.append(imageMenu);
+
+    const rect = imageMenu.getBoundingClientRect();
+    const left = Math.min(x, window.innerWidth - rect.width - 10);
+    const top = Math.min(y, window.innerHeight - rect.height - 10);
+    imageMenu.style.left = `${Math.max(10, left)}px`;
+    imageMenu.style.top = `${Math.max(10, top)}px`;
   }
 
   async function initEditor(loadedContent) {

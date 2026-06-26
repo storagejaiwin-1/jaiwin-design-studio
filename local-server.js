@@ -98,6 +98,73 @@ app.post("/_local/upload", upload.single("image"), async (request, response) => 
   });
 });
 
+app.post("/_local/delete-upload", async (request, response) => {
+  const publicPath = String(request.body?.path || "");
+  if (!publicPath.startsWith("/assets/uploads/")) {
+    response.status(400).send("Only uploaded files can be deleted.");
+    return;
+  }
+
+  const fileName = path.basename(publicPath);
+  const target = path.join(root, "assets", "uploads", fileName);
+  const uploadsRoot = path.join(root, "assets", "uploads");
+  const resolved = path.resolve(target);
+  if (!resolved.startsWith(path.resolve(uploadsRoot))) {
+    response.status(400).send("Invalid upload path.");
+    return;
+  }
+
+  let deleted = false;
+  try {
+    await fs.unlink(resolved);
+    deleted = true;
+  } catch (error) {
+    if (error.code !== "ENOENT") throw error;
+  }
+
+  response.json({
+    ok: true,
+    deleted,
+    path: publicPath
+  });
+});
+
+app.post("/_local/cleanup-missing-uploads", async (request, response) => {
+  const incoming = request.body && request.body.content;
+  if (!incoming || typeof incoming !== "object") {
+    response.status(400).send("Missing website content.");
+    return;
+  }
+
+  const uploadsDir = path.join(root, "assets", "uploads");
+  const items = Array.isArray(incoming.portfolio?.items) ? incoming.portfolio.items : [];
+  const nextItems = [];
+  const removed = [];
+
+  for (const item of items) {
+    const image = String(item.image || "");
+    if (!image.startsWith("/assets/uploads/")) {
+      nextItems.push(item);
+      continue;
+    }
+
+    const fileName = path.basename(image);
+    try {
+      await fs.access(path.join(uploadsDir, fileName));
+      nextItems.push(item);
+    } catch {
+      removed.push(item.title || image);
+    }
+  }
+
+  incoming.portfolio.items = nextItems;
+  response.json({
+    ok: true,
+    removed,
+    content: incoming
+  });
+});
+
 app.post("/_local/content", async (request, response) => {
   const incoming = request.body && request.body.content;
   if (!incoming || typeof incoming !== "object") {
