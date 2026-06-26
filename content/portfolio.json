@@ -9,6 +9,17 @@
   "videoLabel": "Watch video",
   "items": [
     {
+      "title": "90421",
+      "description": "New event poster design from Jaiwin Design Studio.",
+      "category": "Event Poster",
+      "postedDate": "2026-06-26",
+      "image": "/assets/uploads/90421-1782465873820-4ca8ea.png",
+      "videoUpload": "",
+      "externalVideoUrl": "",
+      "featured": false,
+      "altText": "90421 design"
+    },
+    {
       "title": "124449",
       "description": "New wedding banner design from Jaiwin Design Studio.",
       "category": "Wedding Banner",
