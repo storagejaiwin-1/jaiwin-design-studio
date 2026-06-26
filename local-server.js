@@ -10,6 +10,7 @@ const multer = require("multer");
 const root = __dirname;
 const port = Number(process.env.PORT || 8088);
 const sessions = new Map();
+let publishRunning = false;
 
 const contentFiles = Object.freeze({
   siteSettings: "site-settings.json",
@@ -104,9 +105,9 @@ function safeUploadName(originalName) {
   return `${base}-${Date.now()}-${crypto.randomBytes(3).toString("hex")}${extension}`;
 }
 
-function runGit(args) {
+function runGit(args, timeout = 15000) {
   return new Promise((resolve) => {
-    execFile("git", args, { cwd: root, windowsHide: true, timeout: 15000 }, (error, stdout, stderr) => {
+    execFile("git", args, { cwd: root, windowsHide: true, timeout }, (error, stdout, stderr) => {
       resolve({
         ok: !error,
         text: String(stdout || stderr || "").trim()
@@ -285,42 +286,67 @@ app.post("/_local/content", requireEditorLogin, async (request, response) => {
 });
 
 app.post("/_local/publish", requireEditorLogin, async (request, response) => {
+  if (publishRunning) {
+    response.status(409).send("A publish is already running. Please wait a moment.");
+    return;
+  }
+
+  publishRunning = true;
   const message = String(request.body?.message || "Update website content").trim().slice(0, 120);
-  const statusBefore = await runGit(["status", "--short"]);
-  if (!statusBefore.text) {
+  try {
+    const statusBefore = await runGit(["status", "--short"]);
+    if (!statusBefore.text) {
+      response.json({
+        ok: true,
+        changed: false,
+        message: "No changes to publish.",
+        ...(await gitStatus())
+      });
+      return;
+    }
+
+    const add = await runGit(["add", "-A"], 30000);
+    if (!add.ok) {
+      response.status(500).send(add.text || "Could not stage changes.");
+      return;
+    }
+
+    const commit = await runGit(
+      [
+        "-c",
+        "user.name=storagejaiwin-1",
+        "-c",
+        "user.email=262747217+storagejaiwin-1@users.noreply.github.com",
+        "commit",
+        "-m",
+        message
+      ],
+      30000
+    );
+    if (!commit.ok && !commit.text.includes("nothing to commit")) {
+      response.status(500).send(commit.text || "Could not commit changes.");
+      return;
+    }
+
+    const push = await runGit(["push", "-u", "origin", "main"], 90000);
+    if (!push.ok) {
+      response.status(500).send(push.text || "Could not push to GitHub.");
+      return;
+    }
+
     response.json({
       ok: true,
-      changed: false,
-      message: "No changes to publish.",
+      changed: true,
+      message: push.text || "Published to GitHub.",
       ...(await gitStatus())
     });
-    return;
+  } finally {
+    publishRunning = false;
   }
+});
 
-  const add = await runGit(["add", "-A"]);
-  if (!add.ok) {
-    response.status(500).send(add.text || "Could not stage changes.");
-    return;
-  }
-
-  const commit = await runGit(["-c", "user.name=storagejaiwin-1", "-c", "user.email=262747217+storagejaiwin-1@users.noreply.github.com", "commit", "-m", message]);
-  if (!commit.ok && !commit.text.includes("nothing to commit")) {
-    response.status(500).send(commit.text || "Could not commit changes.");
-    return;
-  }
-
-  const push = await runGit(["push", "-u", "origin", "main"]);
-  if (!push.ok) {
-    response.status(500).send(push.text || "Could not push to GitHub.");
-    return;
-  }
-
-  response.json({
-    ok: true,
-    changed: true,
-    message: push.text || "Published to GitHub.",
-    ...(await gitStatus())
-  });
+app.get(["/admin/editor", "/admin/editor/"], (_request, response) => {
+  response.sendFile(path.join(root, "index.html"));
 });
 
 app.use(express.static(root, {

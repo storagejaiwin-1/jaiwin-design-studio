@@ -218,46 +218,48 @@ If the client already owns a domain or later buys one:
 
 Because the website fetches JSON files from the `content` folder, preview it through a small local server instead of opening `index.html` directly from the file system.
 
-Example:
-
-```bash
-python -m http.server 8080
-```
-
-Then open:
-
-```text
-http://localhost:8080
-```
-
-## Local Live Edit Mode
-
-For direct editing on the website itself, use:
-
-```text
-http://127.0.0.1:8088/?edit=1
-```
-
-In Live Edit Mode:
-
-- Click visible website text and type directly on the page.
-- Use "Add work" to add a new portfolio/work post at the top.
-- Use "Add images by category" to choose Sports Banner, Invitation, Logo Design, Shop Banner, or another category and upload one or more images into that category.
-- Click an image, then use "Upload image" to save a new image into `assets/uploads`.
-- Use the color controls to change the website colors.
-- When running with `npm run preview`, uploads and saves are written directly into the website folder.
-- Click "Save changes" to write the updated JSON files into `content/`.
-- Commit and push from VS Code to update GitHub and trigger Netlify.
-
-This mode is local-first. It edits your project files directly on your computer. It appears only when `?edit=1` is in the URL.
-
-The local preview command is now:
+Use this project command:
 
 ```bash
 npm run preview
 ```
 
-It runs a local editor server on port `8088`. That server fixes local image uploads by accepting images from the browser and saving them into `assets/uploads`.
+Then open:
+
+```text
+http://127.0.0.1:8088
+```
+
+## Owner Live Editor
+
+For direct editing on the website itself, open the owner editor:
+
+```text
+http://127.0.0.1:8088/admin/editor
+```
+
+The normal public website does not show edit buttons. Editing controls appear only inside `/admin/editor` after the owner login.
+
+In the Owner Live Editor:
+
+- Click visible website text and type directly on the page.
+- Use "Add work" to add a new portfolio/work post at the top.
+- Use "Upload category images" to choose Sports Banner, Invitation, Logo Design, Shop Banner, or another category and upload one or more images into that category.
+- Click an image, then use "Upload image" to save a new image into `assets/uploads`.
+- Use the red image buttons to delete an uploaded image or delete a whole work card.
+- Use the color controls to change the website colors.
+- Text and image changes save into the project folder.
+- Click "Save + publish" to commit, push to GitHub, and trigger Netlify.
+
+This mode is local-first. It edits your project files directly on your computer and does not ask the browser for folder permission.
+
+For phone editing on the same Wi-Fi, start `npm run preview` on this computer and open:
+
+```text
+http://192.168.1.11:8088/admin/editor
+```
+
+If the Wi-Fi address changes, use the current IPv4 address of this computer.
 
 ### Owner Login For Live Edit Mode
 
@@ -270,7 +272,7 @@ EDITOR_PASSWORD=your-password
 
 The `.env` file is ignored by Git and must not be uploaded to GitHub. Use `.env.example` only as a safe template.
 
-For phone editing on the same Wi-Fi, start `npm run preview` on this computer and open the computer's local network address with `?edit=1` on your phone. The same owner login screen will appear before editing controls are shown.
+For phone editing on the same Wi-Fi, start `npm run preview` on this computer and open the computer's local network address with `/admin/editor` on your phone. The same owner login screen will appear before editing controls are shown.
 
 ## Local Admin Uploads
 

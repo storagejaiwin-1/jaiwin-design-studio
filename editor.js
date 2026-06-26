@@ -2,15 +2,11 @@
   "use strict";
 
   const params = new URLSearchParams(window.location.search);
-  const editMode = params.get("edit") === "1" || params.has("edit");
+  const normalizedPath = window.location.pathname.replace(/\/+$/, "") || "/";
+  const legacyEditMode = params.get("edit") === "1" || params.has("edit");
+  const editMode = normalizedPath === "/admin/editor";
   if (!editMode) {
-    window.addEventListener("DOMContentLoaded", () => {
-      const launcher = document.createElement("a");
-      launcher.className = "live-edit-launcher";
-      launcher.href = `${window.location.pathname}?edit=1`;
-      launcher.textContent = "Edit website";
-      document.body.append(launcher);
-    });
+    if (legacyEditMode) window.location.replace("/admin/editor");
     return;
   }
 
@@ -106,7 +102,6 @@
   ]);
 
   let content = null;
-  let rootHandle = null;
   let localServerReady = false;
   let selectedElement = null;
   let selectedPath = "";
@@ -126,6 +121,7 @@
   let uploadList = null;
   let imageMenu = null;
   let loginPanel = null;
+  let autosaveTimer = null;
 
   function pathParts(path) {
     return String(path || "")
@@ -167,6 +163,23 @@
 
   function status(message) {
     if (statusBox) statusBox.textContent = message;
+  }
+
+  function scheduleAutosave(message = "Saved into the project folder. Use Save + publish when ready.") {
+    window.clearTimeout(autosaveTimer);
+    autosaveTimer = window.setTimeout(async () => {
+      try {
+        await requireLocalEditorServer();
+        await saveWithLocalServer();
+        status(message);
+      } catch (error) {
+        if (String(error.message || "").toLowerCase().includes("login")) {
+          showLoginPanel("Please log in again to save changes.");
+        } else {
+          status(error.message || "Autosave could not finish.");
+        }
+      }
+    }, 900);
   }
 
   async function checkLocalServer() {
@@ -246,9 +259,11 @@
       fieldInput.disabled = selectedType === "image";
       fieldInput.value = selectedType === "image" ? String(getByPath(content, selectedPath) || "") : getTextFromElement(element);
     }
+    const hasWorkCard = Boolean(imagePathToItemPath(selectedPath));
     if (imageButton) imageButton.disabled = selectedType !== "image";
     if (deleteImageButton) deleteImageButton.disabled = selectedType !== "image";
     if (deleteCardButton) deleteCardButton.disabled = selectedType !== "image";
+    if (deleteCardButton) deleteCardButton.textContent = hasWorkCard ? "Delete work card" : "Clear image";
     status(selectedType === "image" ? "Use Upload image to replace this picture." : "Type directly on the page or edit the text box here.");
   }
 
@@ -300,52 +315,10 @@
     });
   }
 
-  async function ensureWritePermission(handle) {
-    if (!handle) return false;
-    if (!handle.queryPermission || !handle.requestPermission) return true;
-    const options = { mode: "readwrite" };
-    if ((await handle.queryPermission(options)) === "granted") return true;
-    return (await handle.requestPermission(options)) === "granted";
-  }
-
-  async function getDirectory(handle, names, options = {}) {
-    let current = handle;
-    for (const name of names) {
-      current = await current.getDirectoryHandle(name, options);
-    }
-    return current;
-  }
-
-  async function chooseWebsiteFolder() {
-    if (!window.showDirectoryPicker) {
-      status("This browser cannot save directly to a folder. Use Chrome or Edge for local live editing.");
-      return;
-    }
-
-    rootHandle = await window.showDirectoryPicker({ mode: "readwrite" });
-    const permitted = await ensureWritePermission(rootHandle);
-    if (!permitted) {
-      rootHandle = null;
-      status("Folder permission was not granted.");
-      return;
-    }
-
-    await rootHandle.getDirectoryHandle("content");
-    await getDirectory(rootHandle, ["assets", "uploads"]);
-    status("Website folder connected. You can save text and upload images locally now.");
-  }
-
-  async function writeTextFile(relativePath, text) {
-    if (!rootHandle) await chooseWebsiteFolder();
-    if (!rootHandle) return;
-
-    const parts = relativePath.split("/");
-    const fileName = parts.pop();
-    const dir = await getDirectory(rootHandle, parts, { create: true });
-    const fileHandle = await dir.getFileHandle(fileName, { create: true });
-    const writable = await fileHandle.createWritable();
-    await writable.write(text);
-    await writable.close();
+  async function requireLocalEditorServer() {
+    if (!localServerReady) await checkLocalServer();
+    if (localServerReady) return;
+    throw new Error("Open the admin editor from the local preview server before saving or uploading.");
   }
 
   async function saveWithLocalServer() {
@@ -362,7 +335,8 @@
   }
 
   async function deleteUploadWithLocalServer(publicPath) {
-    if (!localServerReady || !publicPath.startsWith("/assets/uploads/")) return false;
+    if (!publicPath.startsWith("/assets/uploads/")) return false;
+    await requireLocalEditorServer();
     const response = await fetch("/_local/delete-upload", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -377,34 +351,18 @@
 
   async function saveContentFiles() {
     if (!content) return;
-    if (localServerReady) {
-      try {
-        await saveWithLocalServer();
-      } catch (error) {
-        if (String(error.message || "").includes("login")) showLoginPanel("Please log in again to save changes.");
-        throw error;
-      }
-      status("Saved into the website files. Commit and push from VS Code to update GitHub/Netlify.");
-      return;
+    await requireLocalEditorServer();
+    try {
+      await saveWithLocalServer();
+    } catch (error) {
+      if (String(error.message || "").toLowerCase().includes("login")) showLoginPanel("Please log in again to save changes.");
+      throw error;
     }
-
-    if (!rootHandle) await chooseWebsiteFolder();
-    if (!rootHandle) return;
-
-    await Promise.all(
-      Object.entries(CONTENT_FILES).map(([key, fileName]) =>
-        writeTextFile(`content/${fileName}`, `${JSON.stringify(content[key], null, 2)}\n`)
-      )
-    );
-    status("Saved into the website folder. Commit and push from VS Code to update GitHub/Netlify.");
+    status("Saved into the project folder. Use Save + publish to update GitHub and Netlify.");
   }
 
   async function publishChanges() {
     await saveContentFiles();
-    if (!localServerReady) {
-      status("Saved locally. Start npm run preview to publish from the browser.");
-      return;
-    }
     status("Publishing to GitHub...");
     const response = await fetch("/_local/publish", {
       method: "POST",
@@ -419,43 +377,20 @@
     status(result.changed ? "Published to GitHub. Netlify should deploy from main." : "No changes to publish.");
   }
 
-  function safeFileName(file) {
-    const extension = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "");
-    const base = file.name
-      .replace(/\.[^.]+$/, "")
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-+|-+$/g, "")
-      .slice(0, 56);
-    return `${base || "jaiwin-work"}-${Date.now()}.${extension || "jpg"}`;
-  }
-
   async function saveImageFile(file) {
-    if (localServerReady) {
-      const data = new FormData();
-      data.append("image", file);
-      const response = await fetch("/_local/upload", {
-        method: "POST",
-        body: data
-      });
-      if (!response.ok) {
-        const message = await response.text();
-        throw new Error(message || "Could not upload through the local server.");
-      }
-      const result = await response.json();
-      return result.path;
+    await requireLocalEditorServer();
+    const data = new FormData();
+    data.append("image", file);
+    const response = await fetch("/_local/upload", {
+      method: "POST",
+      body: data
+    });
+    if (!response.ok) {
+      const message = await response.text();
+      throw new Error(message || "Could not upload the image.");
     }
-
-    if (!rootHandle) await chooseWebsiteFolder();
-    if (!rootHandle) return "";
-
-    const fileName = safeFileName(file);
-    const uploads = await getDirectory(rootHandle, ["assets", "uploads"], { create: true });
-    const imageHandle = await uploads.getFileHandle(fileName, { create: true });
-    const writable = await imageHandle.createWritable();
-    await writable.write(file);
-    await writable.close();
-    return `/assets/uploads/${fileName}`;
+    const result = await response.json();
+    return result.path;
   }
 
   async function uploadSelectedImage(file) {
@@ -471,7 +406,8 @@
       selectedElement.src = publicPath;
     }
     if (fieldInput) fieldInput.value = publicPath;
-    status("Image saved locally. Press Save changes to update the website content file.");
+    await saveContentFiles();
+    status("Image uploaded and saved. Use Save + publish to update GitHub and Netlify.");
   }
 
   async function updateSelectedImage() {
@@ -494,12 +430,15 @@
     }
 
     const itemPath = imagePathToItemPath(selectedPath);
+    const message = removeCard && itemPath ? "Work card deleted and saved." : "Image removed and saved.";
     if (removeCard && itemPath) {
       removeByPath(content, itemPath);
-      status("Work card deleted. Press Save changes to update the content file.");
     } else {
-      syncFieldValue(selectedPath, "/assets/images/placeholder-portfolio-1.svg");
-      status("Image removed from this item. Press Save changes.");
+      const fallbackImage =
+        selectedPath === "landing.heroImageFallback" || selectedPath === "about.image"
+          ? "/assets/images/hero-fallback.svg"
+          : "/assets/images/placeholder-portfolio-1.svg";
+      syncFieldValue(selectedPath, fallbackImage);
     }
 
     window.JaiwinSite.renderAll(content);
@@ -507,6 +446,8 @@
     clearSelection();
     selectedElement = null;
     closeImageMenu();
+    await saveContentFiles();
+    status(`${message} Use Save + publish to update GitHub and Netlify.`);
   }
 
   async function cleanupMissingUploads() {
@@ -528,7 +469,8 @@
     window.JaiwinSite.content = content;
     window.JaiwinSite.renderAll(content);
     bindEditableElements();
-    status(result.removed.length ? `Removed ${result.removed.length} missing image card(s). Press Save changes.` : "No missing uploaded images found.");
+    if (result.removed.length) await saveContentFiles();
+    status(result.removed.length ? `Removed ${result.removed.length} missing image card(s) and saved.` : "No missing uploaded images found.");
   }
 
   async function addCategoryImages(files) {
@@ -571,7 +513,8 @@
     bindEditableElements();
     setUploadList(created);
     document.getElementById("portfolio")?.scrollIntoView({ behavior: "smooth", block: "start" });
-    status(`Added ${created.length} image${created.length === 1 ? "" : "s"} to ${category}. Press Save changes.`);
+    await saveContentFiles();
+    status(`Added ${created.length} image${created.length === 1 ? "" : "s"} to ${category} and saved.`);
   }
 
   function setUploadList(items) {
@@ -584,7 +527,7 @@
     });
   }
 
-  function addWorkPost() {
+  async function addWorkPost() {
     if (!content?.portfolio) return;
     if (!Array.isArray(content.portfolio.items)) content.portfolio.items = [];
     content.portfolio.items.unshift({
@@ -601,13 +544,15 @@
     window.JaiwinSite.renderAll(content);
     bindEditableElements();
     document.getElementById("portfolio")?.scrollIntoView({ behavior: "smooth", block: "start" });
-    status("New work card added at the top. Click its text or image to edit it.");
+    await saveContentFiles();
+    status("New work card added and saved. Click its text or image to edit it.");
   }
 
   function updateColor(path, cssVar, value) {
     if (!/^#[0-9a-f]{6}$/i.test(value)) return;
     syncFieldValue(path, value);
     document.documentElement.style.setProperty(cssVar, value);
+    scheduleAutosave("Saved color change into the project folder.");
   }
 
   function createPanel() {
@@ -616,7 +561,7 @@
     panel.setAttribute("aria-label", "Live website editor");
 
     const title = document.createElement("strong");
-    title.textContent = "Live Edit Mode";
+    title.textContent = "Admin Live Editor";
 
     const header = document.createElement("div");
     header.className = "live-editor-header";
@@ -629,18 +574,21 @@
     const topRow = document.createElement("div");
     topRow.className = "live-editor-row";
 
-    const chooseButton = button("Choose folder", chooseWebsiteFolder);
     const saveButton = button("Save changes", saveContentFiles, true);
     const publishButton = button("Save + publish", publishChanges, true);
     const addButton = button("Add work", addWorkPost);
     const cleanupButton = button("Clean missing images", cleanupMissingUploads);
     const logoutButton = button("Logout", logoutEditor);
+    const adminLink = document.createElement("a");
+    adminLink.className = "live-editor-link";
+    adminLink.href = "/admin/";
+    adminLink.textContent = "CMS";
     const exitLink = document.createElement("a");
     exitLink.className = "live-editor-link";
-    exitLink.href = window.location.pathname;
-    exitLink.textContent = "Exit";
+    exitLink.href = "/";
+    exitLink.textContent = "View site";
 
-    topRow.append(saveButton, publishButton, addButton, cleanupButton, chooseButton, logoutButton, exitLink);
+    topRow.append(saveButton, publishButton, addButton, cleanupButton, adminLink, logoutButton, exitLink);
 
     selectedLabel = document.createElement("p");
     selectedLabel.className = "live-editor-selected-label";
@@ -655,6 +603,7 @@
       const value = cleanText(fieldInput.value);
       syncFieldValue(selectedPath, value);
       selectedElement.textContent = value;
+      scheduleAutosave("Saved text into the project folder.");
     });
     fieldLabel.append(fieldInput);
 
@@ -719,7 +668,7 @@
       categoryFileInput.value = "";
     });
 
-    const uploadCategoryButton = button("Choose category images", () => categoryFileInput.click());
+    const uploadCategoryButton = button("Upload category images", () => categoryFileInput.click(), true);
     uploadList = document.createElement("ul");
     uploadList.className = "live-editor-upload-list";
 
@@ -771,7 +720,7 @@
       </label>
       <div class="live-editor-row">
         <button class="live-editor-button is-primary" type="submit">Login</button>
-        <a class="live-editor-link" href="${window.location.pathname}">Cancel</a>
+        <a class="live-editor-link" href="/">View site</a>
       </div>
       <p class="live-editor-status">Only the website owner can edit.</p>
     `;
@@ -860,6 +809,7 @@
       const value = getTextFromElement(target);
       syncFieldValue(path, value);
       if (target === selectedElement && fieldInput) fieldInput.value = value;
+      scheduleAutosave("Saved text into the project folder.");
     });
 
     document.addEventListener("keydown", (event) => {
@@ -927,7 +877,7 @@
     if (server?.ok) {
       status(server.remote ? "Live editor ready. Local saving and uploads are active." : "Live editor ready. Uploads work locally; GitHub remote is not attached yet.");
     } else {
-      status("Live editor ready. Local server is not active, so choose the website folder before saving or uploading.");
+      status("The local editor server is not connected yet. Open this page from the local preview before saving or uploading.");
     }
   }
 

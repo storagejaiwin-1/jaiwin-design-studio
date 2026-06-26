@@ -1,14 +1,14 @@
 "use strict";
 
 const CONTENT_PATHS = Object.freeze({
-  siteSettings: "content/site-settings.json",
-  landing: "content/landing.json",
-  services: "content/services.json",
-  portfolio: "content/portfolio.json",
-  about: "content/about.json",
-  contact: "content/contact.json",
-  process: "content/process.json",
-  homepageSections: "content/homepage-sections.json"
+  siteSettings: "/content/site-settings.json",
+  landing: "/content/landing.json",
+  services: "/content/services.json",
+  portfolio: "/content/portfolio.json",
+  about: "/content/about.json",
+  contact: "/content/contact.json",
+  process: "/content/process.json",
+  homepageSections: "/content/homepage-sections.json"
 });
 
 const FALLBACK_DATA = Object.freeze({

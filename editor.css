@@ -2,25 +2,6 @@ body.live-edit-mode {
   padding-bottom: 0;
 }
 
-.live-edit-launcher {
-  position: fixed;
-  right: 16px;
-  bottom: 16px;
-  z-index: 11000;
-  display: inline-flex;
-  min-height: 46px;
-  align-items: center;
-  justify-content: center;
-  padding: 11px 14px;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: var(--radius);
-  color: #07101d;
-  background: linear-gradient(135deg, #ffffff, #8df1ff 42%, #ffdf8f);
-  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.34);
-  font-size: 0.88rem;
-  font-weight: 900;
-}
-
 .live-editor-panel {
   position: fixed;
   top: 98px;
@@ -404,11 +385,6 @@ body.live-edit-mode [contenteditable="true"] {
     width: auto;
     max-height: 58vh;
     padding: 12px;
-  }
-
-  .live-edit-launcher {
-    right: 10px;
-    bottom: 10px;
   }
 
   .live-image-actions {
