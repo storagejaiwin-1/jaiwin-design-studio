@@ -125,6 +125,7 @@
   let categoryFileInput = null;
   let uploadList = null;
   let imageMenu = null;
+  let loginPanel = null;
 
   function pathParts(path) {
     return String(path || "")
@@ -178,6 +179,20 @@
     } catch {
       localServerReady = false;
       return null;
+    }
+  }
+
+  async function checkEditorAuth() {
+    try {
+      const response = await fetch("/_local/auth/status", { cache: "no-store" });
+      if (!response.ok) throw new Error("Login server not ready");
+      return await response.json();
+    } catch {
+      return {
+        ok: false,
+        configured: false,
+        authenticated: false
+      };
     }
   }
 
@@ -363,7 +378,12 @@
   async function saveContentFiles() {
     if (!content) return;
     if (localServerReady) {
-      await saveWithLocalServer();
+      try {
+        await saveWithLocalServer();
+      } catch (error) {
+        if (String(error.message || "").includes("login")) showLoginPanel("Please log in again to save changes.");
+        throw error;
+      }
       status("Saved into the website files. Commit and push from VS Code to update GitHub/Netlify.");
       return;
     }
@@ -614,12 +634,13 @@
     const publishButton = button("Save + publish", publishChanges, true);
     const addButton = button("Add work", addWorkPost);
     const cleanupButton = button("Clean missing images", cleanupMissingUploads);
+    const logoutButton = button("Logout", logoutEditor);
     const exitLink = document.createElement("a");
     exitLink.className = "live-editor-link";
     exitLink.href = window.location.pathname;
     exitLink.textContent = "Exit";
 
-    topRow.append(saveButton, publishButton, addButton, cleanupButton, chooseButton, exitLink);
+    topRow.append(saveButton, publishButton, addButton, cleanupButton, chooseButton, logoutButton, exitLink);
 
     selectedLabel = document.createElement("p");
     selectedLabel.className = "live-editor-selected-label";
@@ -731,6 +752,60 @@
     document.body.append(panel);
   }
 
+  function showLoginPanel(message = "Log in to edit this website.") {
+    if (panel) panel.remove();
+    panel = null;
+    document.body.classList.remove("live-edit-mode");
+    if (loginPanel) loginPanel.remove();
+
+    loginPanel = document.createElement("form");
+    loginPanel.className = "live-login-panel";
+    loginPanel.innerHTML = `
+      <h2>Website editor login</h2>
+      <p>${message}</p>
+      <label>Email
+        <input name="email" type="email" autocomplete="username" required />
+      </label>
+      <label>Password
+        <input name="password" type="password" autocomplete="current-password" required />
+      </label>
+      <div class="live-editor-row">
+        <button class="live-editor-button is-primary" type="submit">Login</button>
+        <a class="live-editor-link" href="${window.location.pathname}">Cancel</a>
+      </div>
+      <p class="live-editor-status">Only the website owner can edit.</p>
+    `;
+    document.body.append(loginPanel);
+
+    loginPanel.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const data = new FormData(loginPanel);
+      const statusLine = loginPanel.querySelector(".live-editor-status");
+      statusLine.textContent = "Checking login...";
+      try {
+        const response = await fetch("/_local/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: data.get("email"),
+            password: data.get("password")
+          })
+        });
+        if (!response.ok) throw new Error(await response.text());
+        loginPanel.remove();
+        loginPanel = null;
+        initEditor(content);
+      } catch (error) {
+        statusLine.textContent = error.message || "Login failed.";
+      }
+    });
+  }
+
+  async function logoutEditor() {
+    await fetch("/_local/auth/logout", { method: "POST" });
+    showLoginPanel("Logged out. Log in again to edit.");
+  }
+
   function button(label, action, primary = false, extraClass = "") {
     const element = document.createElement("button");
     element.type = "button";
@@ -839,6 +914,11 @@
 
   async function initEditor(loadedContent) {
     content = loadedContent;
+    const auth = await checkEditorAuth();
+    if (!auth.authenticated) {
+      showLoginPanel(auth.configured ? "Log in to edit this website." : "Editor login is not configured on this device.");
+      return;
+    }
     document.body.classList.add("live-edit-mode");
     bindEditableElements();
     createPanel();

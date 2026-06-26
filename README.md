@@ -259,6 +259,19 @@ npm run preview
 
 It runs a local editor server on port `8088`. That server fixes local image uploads by accepting images from the browser and saving them into `assets/uploads`.
 
+### Owner Login For Live Edit Mode
+
+The local editor is protected with an email and password. Keep the real values in `.env` on your computer:
+
+```text
+EDITOR_EMAIL=your-email@example.com
+EDITOR_PASSWORD=your-password
+```
+
+The `.env` file is ignored by Git and must not be uploaded to GitHub. Use `.env.example` only as a safe template.
+
+For phone editing on the same Wi-Fi, start `npm run preview` on this computer and open the computer's local network address with `?edit=1` on your phone. The same owner login screen will appear before editing controls are shown.
+
 ## Local Admin Uploads
 
 The `/admin` CMS also supports local saving because this project has `local_backend: true`.

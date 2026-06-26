@@ -40,6 +40,58 @@ body.live-edit-mode {
   overflow: auto;
 }
 
+.live-login-panel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 14000;
+  display: grid;
+  width: min(380px, calc(100vw - 28px));
+  gap: 12px;
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius);
+  color: #ffffff;
+  background: rgba(7, 8, 29, 0.96);
+  box-shadow: 0 24px 90px rgba(0, 0, 0, 0.48);
+  backdrop-filter: blur(18px);
+  transform: translate(-50%, -50%);
+}
+
+.live-login-panel h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.live-login-panel p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.live-login-panel label {
+  display: grid;
+  gap: 7px;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.84rem;
+  font-weight: 850;
+}
+
+.live-login-panel input {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: var(--radius);
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.28);
+  padding: 10px 12px;
+}
+
+.live-login-panel .live-editor-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
 .live-editor-panel.is-collapsed > :not(.live-editor-header) {
   display: none;
 }
