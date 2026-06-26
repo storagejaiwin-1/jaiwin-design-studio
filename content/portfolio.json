@@ -9,6 +9,17 @@
   "videoLabel": "Watch video",
   "items": [
     {
+      "title": "124449",
+      "description": "New wedding banner design from Jaiwin Design Studio.",
+      "category": "Wedding Banner",
+      "postedDate": "2026-06-26",
+      "image": "/assets/uploads/124449-1782458560905-98e5b7.jpg",
+      "videoUpload": "",
+      "externalVideoUrl": "",
+      "featured": false,
+      "altText": "124449 design"
+    },
+    {
       "title": "New work title",
       "description": "Write a short description for this design.",
       "category": "Other",
