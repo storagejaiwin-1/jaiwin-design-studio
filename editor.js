@@ -764,6 +764,16 @@
       openImageMenu(event.clientX, event.clientY);
     });
 
+    document.addEventListener("pointerdown", (event) => {
+      if (event.button !== 2) return;
+      const target = event.target.closest("[data-live-image]");
+      if (!target || panel?.contains(target)) return;
+      event.preventDefault();
+      event.stopPropagation();
+      selectElement(target);
+      openImageMenu(event.clientX, event.clientY);
+    });
+
     document.addEventListener("click", (event) => {
       if (imageMenu && !imageMenu.contains(event.target)) closeImageMenu();
     });

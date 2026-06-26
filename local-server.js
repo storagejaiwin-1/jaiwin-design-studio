@@ -53,7 +53,7 @@ function safeUploadName(originalName) {
 
 function runGit(args) {
   return new Promise((resolve) => {
-    execFile("git", args, { cwd: root, windowsHide: true }, (error, stdout, stderr) => {
+    execFile("git", args, { cwd: root, windowsHide: true, timeout: 15000 }, (error, stdout, stderr) => {
       resolve({
         ok: !error,
         text: String(stdout || stderr || "").trim()
@@ -63,9 +63,11 @@ function runGit(args) {
 }
 
 async function gitStatus() {
-  const branch = await runGit(["branch", "--show-current"]);
-  const remote = await runGit(["remote", "get-url", "origin"]);
-  const status = await runGit(["status", "--short"]);
+  const [branch, remote, status] = await Promise.all([
+    runGit(["branch", "--show-current"]),
+    runGit(["remote", "get-url", "origin"]),
+    runGit(["status", "--short"])
+  ]);
   return {
     branch: branch.text || "main",
     remote: remote.ok ? remote.text : "",
